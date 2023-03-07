@@ -1,7 +1,7 @@
-# Getting Started with Create React App
+# About this app
 
 that's a minesweeper game implementation
 
-## Available Scripts
+## Tools
 
 created with React, Redux, Material Ui
