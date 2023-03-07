@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './apps/App';
 import reportWebVitals from './reportWebVitals';
-import { persistor, store } from './ds/store';
+import { persistor, store } from './modules/pages/common/ds/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 

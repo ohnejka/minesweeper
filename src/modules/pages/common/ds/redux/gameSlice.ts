@@ -1,17 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-
-export enum GameLevels {
-  Easy = 'Easy',
-  Medium = 'Medium',
-  Hard = 'Hard',
-}
+import { GameLevels, LevelOption } from '../../bl/entities';
 
 type GameState = {
   level: GameLevels;
-  levelOptions: {
-    [key in GameLevels]: { width: number; height: number; minesQty: number };
-  };
+  levelOptions: LevelOption;
   levelOptionsNames: GameLevels[];
 };
 

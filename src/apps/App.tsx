@@ -6,8 +6,8 @@ import {
   Route,
   createRoutesFromElements,
 } from 'react-router-dom';
-import { HomePage } from '../modules/pages/home/home';
-import LeaderboardPage from '../modules/pages/leaderboard/leaderboard';
+import { HomePage } from '../modules/pages/home/Home';
+import LeaderboardPage from '../modules/pages/leaderboard/Leaderboard';
 
 // @TODO: check non-existing pages, add redirects
 // @TODO add standard ERROR LAYOUT

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { GameLevels } from './gameSlice';
+import { GameLevels } from '../../bl/entities';
 
 export type Player = {
   username: string;

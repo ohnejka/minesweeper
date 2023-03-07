@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import StyledSettings from '../../../../ui/components/Settings';
+import StyledSettings from './Settings';
 
 const Screen: FC = () => {
   return (

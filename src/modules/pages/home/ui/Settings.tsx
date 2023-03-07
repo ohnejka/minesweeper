@@ -11,8 +11,9 @@ import {
 import { FC, ChangeEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { GameLevels, setGameLevel } from '../../ds/redux/gameSlice';
-import { RootState } from '../../ds/store';
+import { GameLevels } from '../../common/bl/entities';
+import { setGameLevel } from '../../common/ds/redux/gameSlice';
+import { RootState } from '../../common/ds/store';
 
 const Settings: FC = () => {
   const [username, setUsername] = useState('');
