@@ -16,14 +16,13 @@ const Game: FC = () => {
   const { handleUpdateTimer, initBoard } = fns;
 
   useEffect(() => {
-    console.log('use effect');
     const drawBoard = (
       matrix: ReadonlyArray<ReadonlyArray<GameCell>>
     ): void => {};
 
     const gameSettings = initBoard();
     drawBoard(gameSettings);
-  }, [initBoard, currentLevel]);
+  }, [currentLevel, initBoard]);
 
   useEffect(() => {
     let intervalId: any;

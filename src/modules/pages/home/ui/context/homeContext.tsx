@@ -1,4 +1,11 @@
-import { createContext, FC, PropsWithChildren, useMemo, useState } from 'react';
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import { GameLevels, LevelOption } from '../../../common/bl/entities';
 import { GameCell } from '../../bl/entities';
@@ -40,7 +47,6 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
     return new HomeCommandRepo(dispatch);
   }, [dispatch]);
 
-  // . @TODO use memo or something
   const levelSettings = homeQueryRepo.getLevelSettings();
   const currentLevel = homeQueryRepo.getCurrentLevel();
   const levelOptions = homeQueryRepo.getLevelsOptions();
@@ -48,6 +54,8 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const gameUC = useMemo(() => {
     return new GameUC(levelSettings, currentLevel);
   }, [levelSettings, currentLevel]);
+
+  const initBoard = useCallback(() => gameUC.initGame(), [gameUC]);
 
   const value: HomeContextState = {
     state: {
@@ -73,7 +81,7 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
         const newTime = timeInSeconds + 1;
         setTime(newTime);
       },
-      initBoard: () => gameUC.initGame(),
+      initBoard,
     },
   };
 

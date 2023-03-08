@@ -1,8 +1,6 @@
 // Fisher–Yates shuffle
 
-export const shuffleArray = (
-  arr: ReadonlyArray<number>
-): ReadonlyArray<number> => {
+export function shuffleArray<T>(arr: ReadonlyArray<T>): ReadonlyArray<T> {
   const array = [...arr];
   let currentIndex = array.length;
   let randomIndex = 0;
@@ -18,4 +16,4 @@ export const shuffleArray = (
   }
 
   return array;
-};
+}
