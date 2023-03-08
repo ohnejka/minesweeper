@@ -29,21 +29,50 @@ export class GameUC {
     arr: ReadonlyArray<0 | 1>
   ): ReadonlyArray<ReadonlyArray<GameCell>> => {
     const matrix = splitArrayIntoChunks(arr, this.width);
-    console.log(matrix);
-
     const infusedMatrix: Array<Array<GameCell>> = [];
 
     for (let i = 0; i < matrix.length; i++) {
       const row: ReadonlyArray<0 | 1> = matrix[i];
+      const upRow = matrix[i - 1];
+      const bottomRow = matrix[i + 1];
+
+      const isTopRow = upRow === undefined;
+      const isBottomRow = bottomRow === undefined;
+
       const infusedRow: Array<GameCell> = [];
 
       for (let k = 0; k < row.length; k++) {
-        const el = row[k];
-        const bombsAround = 0;
+        const col = row[k];
+        const leftCol = row[k - 1];
+        const rightCol = row[k + 1];
+
+        const isLeftCol = leftCol === undefined;
+        const isRightCol = rightCol === undefined;
+
+        const topLeftEl = isTopRow || isLeftCol ? null : upRow[leftCol];
+        const topEl = isTopRow ? null : upRow[col];
+        const topRight = isTopRow || isRightCol ? null : upRow[rightCol];
+        const right = isRightCol ? null : row[rightCol];
+        const bottomRight =
+          isBottomRow || isRightCol ? null : bottomRow[rightCol];
+        const bottom = isBottomRow ? null : bottomRow[col];
+        const bottomLeft = isBottomRow || isLeftCol ? null : bottomRow[leftCol];
+        const left = isLeftCol ? null : row[leftCol];
+
+        const bombsAround = [
+          topLeftEl,
+          topEl,
+          topRight,
+          right,
+          bottomRight,
+          bottom,
+          bottomLeft,
+          left,
+        ].filter((x) => x === 1).length;
 
         const cell: GameCell = {
-          value: el,
-          isBomb: Boolean(el),
+          value: col,
+          isBomb: Boolean(col),
           isOpen: false,
           bombsAround,
         };
@@ -57,6 +86,7 @@ export class GameUC {
     const readonlyInfusedMatrix: ReadonlyArray<ReadonlyArray<GameCell>> = [
       ...infusedMatrix,
     ];
+
     return readonlyInfusedMatrix;
   };
 
