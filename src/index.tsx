@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { persistor, store } from './modules/pages/common/ds/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import GlobalStyles from './modules/global/styles/global';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,6 +16,7 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <App />
+        <GlobalStyles />
       </PersistGate>
     </Provider>
   </React.StrictMode>
