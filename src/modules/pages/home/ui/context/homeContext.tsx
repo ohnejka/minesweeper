@@ -6,18 +6,15 @@ import { HomeQueryRepo } from '../../ds/repositories/queryRepo';
 
 export interface HomeContextState {
   readonly state: {
-    readonly username: string;
     readonly gameIsStarted: boolean;
-    readonly gameIsPaused: boolean;
     readonly levelOptions: ReadonlyArray<GameLevels>;
     readonly currentLevel: GameLevels;
+    readonly time: number;
   };
   readonly fns: {
     readonly handleLevelOptionChange: (level: GameLevels) => void;
-    readonly handleUsernameChange: (name: string) => void;
     readonly handleStartNewGame: () => void;
-    readonly handleResetGame: () => void;
-    readonly handleTogglePauseGame: () => void;
+    readonly handleUpdateTimer: () => void;
   };
 }
 
@@ -26,9 +23,8 @@ export const HomeContext = createContext<HomeContextState>(
 );
 
 export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [username, setUsername] = useState('');
   const [gameIsStarted, setGameIsStarted] = useState(false);
-  const [gameIsPaused, setGameIsPaused] = useState(false);
+  const [timeInSeconds, setTime] = useState(0);
 
   const homeQueryRepo = useMemo(() => {
     return new HomeQueryRepo();
@@ -42,35 +38,26 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const value: HomeContextState = {
     state: {
-      username,
+      time: timeInSeconds,
       gameIsStarted,
-      gameIsPaused,
       levelOptions: homeQueryRepo.getAllLevelsOptions(),
       currentLevel: homeQueryRepo.getCurrentLevel(),
     },
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {
         homeCommandRepo.setGameLevel(level);
-      },
-      handleUsernameChange: (name: string) => {
-        setUsername(name.trim());
+        // . prepare bomb field
+        setGameIsStarted(false);
+        setTime(0);
       },
       handleStartNewGame: () => {
+        // . prepare bomb field
         setGameIsStarted(true);
-        setGameIsPaused(false);
-        //     // . set timer for user
-        //     // . unblock game field
+        setTime(0);
       },
-      handleResetGame: () => {
-        setGameIsStarted(false);
-        setGameIsPaused(false);
-        //     // .  block and reset game field
-        //     // . stop and reset timer
-      },
-      handleTogglePauseGame: () => {
-        setGameIsPaused(!gameIsPaused);
-        //     // . stop timer
-        //     // . block game field
+      handleUpdateTimer: () => {
+        const newTime = timeInSeconds + 1;
+        setTime(newTime);
       },
     },
   };
