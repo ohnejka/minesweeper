@@ -3,4 +3,5 @@ export type GameCell = {
   readonly bombsAround: number;
   readonly isBomb: boolean;
   readonly isOpen: boolean;
+  readonly id: string;
 };

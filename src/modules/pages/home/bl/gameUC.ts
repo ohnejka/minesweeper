@@ -2,6 +2,7 @@ import { shuffleArray } from '../../../global/helpers/shuffleArray';
 import { splitArrayIntoChunks } from '../../../global/helpers/splitArrayIntoChunks';
 import { GameLevels, LevelOption } from '../../common/bl/entities';
 import { GameCell } from './entities';
+import { v4 } from 'uuid';
 
 export class GameUC {
   private width = 0;
@@ -49,17 +50,16 @@ export class GameUC {
         const isLeftCol = leftCol === undefined;
         const isRightCol = rightCol === undefined;
 
-        const topLeftEl = isTopRow || isLeftCol ? null : upRow[leftCol];
-        const topEl = isTopRow ? null : upRow[col];
-        const topRight = isTopRow || isRightCol ? null : upRow[rightCol];
-        const right = isRightCol ? null : row[rightCol];
-        const bottomRight =
-          isBottomRow || isRightCol ? null : bottomRow[rightCol];
-        const bottom = isBottomRow ? null : bottomRow[col];
-        const bottomLeft = isBottomRow || isLeftCol ? null : bottomRow[leftCol];
-        const left = isLeftCol ? null : row[leftCol];
+        const topLeftEl = isTopRow || isLeftCol ? null : upRow[k - 1];
+        const topEl = isTopRow ? null : upRow[k];
+        const topRight = isTopRow || isRightCol ? null : upRow[k + 1];
+        const right = isRightCol ? null : row[k + 1];
+        const bottomRight = isBottomRow || isRightCol ? null : bottomRow[k + 1];
+        const bottom = isBottomRow ? null : bottomRow[k];
+        const bottomLeft = isBottomRow || isLeftCol ? null : bottomRow[k - 1];
+        const left = isLeftCol ? null : row[k - 1];
 
-        const bombsAround = [
+        const aroundArr = [
           topLeftEl,
           topEl,
           topRight,
@@ -68,13 +68,16 @@ export class GameUC {
           bottom,
           bottomLeft,
           left,
-        ].filter((x) => x === 1).length;
+        ];
+
+        const bombsAround = aroundArr.filter((x) => x === 1).length;
 
         const cell: GameCell = {
           value: col,
           isBomb: Boolean(col),
           isOpen: false,
           bombsAround,
+          id: v4(),
         };
 
         infusedRow.push(cell);

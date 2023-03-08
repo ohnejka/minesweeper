@@ -20,6 +20,7 @@ export interface HomeContextState {
     readonly levelSettings: LevelOption;
     readonly currentLevel: GameLevels;
     readonly time: number;
+    readonly gameKey: number;
   };
   readonly fns: {
     readonly handleLevelOptionChange: (level: GameLevels) => void;
@@ -36,6 +37,7 @@ export const HomeContext = createContext<HomeContextState>(
 export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [gameIsStarted, setGameIsStarted] = useState(false);
   const [timeInSeconds, setTime] = useState(0);
+  const [gameKey, setGameKey] = useState(0);
 
   const homeQueryRepo = useMemo(() => {
     return new HomeQueryRepo();
@@ -64,16 +66,19 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       levelOptions,
       levelSettings,
       currentLevel,
+      gameKey,
     },
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {
         homeCommandRepo.setGameLevel(level);
         gameUC.initGame();
+        setGameKey(gameKey + 1);
         setGameIsStarted(false);
         setTime(0);
       },
       handleStartNewGame: () => {
         gameUC.initGame();
+        setGameKey(gameKey + 1);
         setGameIsStarted(true);
         setTime(0);
       },

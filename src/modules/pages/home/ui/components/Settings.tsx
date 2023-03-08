@@ -34,7 +34,6 @@ const Settings: FC = () => {
       <Grid container direction='column' alignItems='center' spacing={2}>
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel id='game-level-options'>Game level</FormLabel>
             <RadioGroup
               aria-labelledby='game-level-options'
               name='game-level-options'
@@ -58,7 +57,7 @@ const Settings: FC = () => {
         <Grid item xs={4}>
           <Box sx={{ display: 'flex' }}>
             <Button variant='contained' onClick={onStartNewGame}>
-              Start new game!
+              Start new game
             </Button>
           </Box>
         </Grid>

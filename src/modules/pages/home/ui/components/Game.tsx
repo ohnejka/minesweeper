@@ -1,5 +1,5 @@
-import { Box, Grid, Typography } from '@mui/material';
-import { FC, useContext, useEffect } from 'react';
+import { Divider, Grid, Typography } from '@mui/material';
+import { FC, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   formatSeconds,
@@ -7,22 +7,23 @@ import {
 } from '../../../../global/helpers/formatSeconds';
 import { GameCell } from '../../bl/entities';
 import { HomeContext, HomeContextState } from '../context/homeContext';
+import { StyledCell, TimerBox } from './styled';
 
 const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
   const { state, fns } = homeContext;
 
-  const { gameIsStarted, time, currentLevel } = state;
+  const { gameIsStarted, time, gameKey, currentLevel } = state;
   const { handleUpdateTimer, initBoard } = fns;
 
-  useEffect(() => {
-    const drawBoard = (
-      matrix: ReadonlyArray<ReadonlyArray<GameCell>>
-    ): void => {};
+  const [gameCells, setGameCells] = useState(
+    [] as ReadonlyArray<ReadonlyArray<GameCell>>
+  );
 
+  useEffect(() => {
     const gameSettings = initBoard();
-    drawBoard(gameSettings);
-  }, [currentLevel, initBoard]);
+    setGameCells(gameSettings);
+  }, [initBoard, currentLevel, gameKey]);
 
   useEffect(() => {
     let intervalId: any;
@@ -44,7 +45,7 @@ const Game: FC = () => {
       spacing={2}
       marginTop={2}
     >
-      <Grid item xs={6}>
+      <Grid item xs={6} style={{ display: 'flex', gap: '10px' }}>
         <TimerBox>
           <Typography variant='body1'>{formattedTime.h}</Typography>
           <Typography variant='body1'>:</Typography>
@@ -52,20 +53,44 @@ const Game: FC = () => {
           <Typography variant='body1'>:</Typography>
           <Typography variant='body1'>{formattedTime.s}</Typography>
         </TimerBox>
-        <Box> 10 bombs left</Box>
+        <Divider orientation='vertical' flexItem />
+        <Typography variant='body1'>10 bombs left</Typography>
       </Grid>
-      <Grid item xs={6}>
-        <div>field</div>
+      <Grid item xs={6} style={{ display: 'flex', flexDirection: 'column' }}>
+        {gameCells.map((row: ReadonlyArray<GameCell>, index) => {
+          return (
+            <div style={{ display: 'flex' }} key={index}>
+              {row.map((el: GameCell) => {
+                return (
+                  <div key={el.id}>
+                    {!el.isBomb && (
+                      <StyledCell
+                        isOpen={el.isOpen}
+                        bombsAround={el.bombsAround}
+                      >
+                        <span>{el.bombsAround}</span>
+                      </StyledCell>
+                    )}
+                    {el.isBomb && (
+                      <StyledCell
+                        isOpen={el.isOpen}
+                        bombsAround={el.bombsAround}
+                      >
+                        <span>💣</span>
+                      </StyledCell>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
       </Grid>
     </Grid>
   );
 };
 
-const TimerBox = styled(Box)`
-  display: flex;
-`;
-
-const StyledGame = styled(Game)`
+export const StyledGame = styled(Game)`
   display: flex;
   align-items: center;
   justify-content: center;
