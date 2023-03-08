@@ -1,18 +1,29 @@
 import { Box, Grid, Typography } from '@mui/material';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   formatSeconds,
   TimerFormat,
 } from '../../../../global/helpers/formatSeconds';
+import { GameCell } from '../../bl/entities';
 import { HomeContext, HomeContextState } from '../context/homeContext';
 
 const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
   const { state, fns } = homeContext;
 
-  const { gameIsStarted, time } = state;
-  const { handleUpdateTimer } = fns;
+  const { gameIsStarted, time, currentLevel } = state;
+  const { handleUpdateTimer, initBoard } = fns;
+
+  useEffect(() => {
+    console.log('use effect');
+    const drawBoard = (
+      matrix: ReadonlyArray<ReadonlyArray<GameCell>>
+    ): void => {};
+
+    const gameSettings = initBoard();
+    drawBoard(gameSettings);
+  }, [initBoard, currentLevel]);
 
   useEffect(() => {
     let intervalId: any;
