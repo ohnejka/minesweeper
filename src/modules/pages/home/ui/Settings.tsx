@@ -8,54 +8,45 @@ import {
   Grid,
   Button,
 } from '@mui/material';
-import { FC, ChangeEvent, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { FC, ChangeEvent, useContext } from 'react';
 import styled from 'styled-components';
 import { GameLevels } from '../../common/bl/entities';
-import { setGameLevel } from '../../common/ds/redux/gameSlice';
-import { RootState } from '../../common/ds/store';
+import { HomeContext, HomeContextState } from './context/homeContext';
 
 const Settings: FC = () => {
-  const [username, setUsername] = useState('');
-  const [gameIsOn, setGameIsOn] = useState(false);
-  const [gameIsPaused, setGameIsPaused] = useState(false);
+  const homeContext: HomeContextState = useContext(HomeContext);
+  const { state, fns } = homeContext;
 
-  const levelOptions = useSelector(
-    (state: RootState) => state.game.levelOptionsNames
-  );
-  const currentLevel = useSelector((state: RootState) => state.game.level);
-  const dispatch = useDispatch();
+  const { username, gameIsStarted, gameIsPaused, levelOptions, currentLevel } =
+    state;
+  const {
+    handleLevelOptionChange,
+    handleResetGame,
+    handleStartNewGame,
+    handleTogglePauseGame,
+    handleUsernameChange,
+  } = fns;
 
   const onOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newLevel = (event.target as HTMLInputElement).value;
-    dispatch(setGameLevel(newLevel as GameLevels));
+    handleLevelOptionChange(newLevel as GameLevels);
   };
 
   const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const username = (event.target as HTMLInputElement).value;
-    setUsername(username);
+    handleUsernameChange(username);
   };
 
   const onStartNewGame = () => {
-    setGameIsOn(true);
-    setGameIsPaused(false);
-    // . set timer for user
-    // . unblock game field
+    handleStartNewGame();
   };
 
   const onToggleGame = () => {
-    setGameIsPaused(!gameIsPaused);
-
-    // . stop timer
-    // . block game field
+    handleTogglePauseGame();
   };
 
   const onResetGame = () => {
-    setGameIsOn(false);
-    setGameIsPaused(false);
-
-    // .  block and reset game field
-    // . stop and reset timer
+    handleResetGame();
   };
 
   return (
@@ -69,7 +60,7 @@ const Settings: FC = () => {
             hiddenLabel
             placeholder={'My name is...'}
             value={username}
-            disabled={gameIsOn}
+            disabled={gameIsStarted}
             onChange={onUsernameChange}
           />
         </FormControl>
@@ -85,13 +76,13 @@ const Settings: FC = () => {
             onChange={onOptionChange}
           >
             {levelOptions &&
-              levelOptions.map((option) => (
+              levelOptions.map((option: GameLevels) => (
                 <FormControlLabel
                   key={option}
                   value={option}
                   control={<Radio />}
                   label={option}
-                  disabled={gameIsOn}
+                  disabled={gameIsStarted}
                 />
               ))}
           </RadioGroup>
@@ -107,11 +98,11 @@ const Settings: FC = () => {
           Start new game!
         </Button>
       </Grid>
-      {gameIsOn && (
+      {gameIsStarted && (
         <Grid item xs={6}>
           <Button
             variant='outlined'
-            disabled={!gameIsOn}
+            disabled={!gameIsStarted}
             onClick={onToggleGame}
           >
             {gameIsPaused ? 'Continue' : 'Pause'}

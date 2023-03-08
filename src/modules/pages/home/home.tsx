@@ -1,7 +1,13 @@
 import { DefaultLayout } from '../common/ui/DefaultLayout';
 import Screen from './ui/Screen';
-import { FC } from 'react';
+import { FC, memo } from 'react';
+import { HomeContextProvider } from './ui/context/homeContext';
+import { withContext } from '../../global/react/WithContext';
 
-export const HomePage: FC = () => {
+const HomePageInner: FC = () => {
   return DefaultLayout({ children: <Screen /> });
 };
+
+export const HomePage = memo(
+  withContext(HomeContextProvider, memo(HomePageInner))
+);
