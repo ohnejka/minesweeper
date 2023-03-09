@@ -7,18 +7,18 @@ interface CellProps {
 }
 
 export const StyledCell = styled.div<CellProps>`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 30px;
   height: 30px;
-  background-color: ${({ isOpen }) =>
-    isOpen ? 'transparent' : baseTheme.gameColors.background};
+  background-color: ${baseTheme.gameColors.background};
   outline: 1px solid ${baseTheme.gameColors.border};
   color: ${({ bombsAround }) => {
     switch (bombsAround) {
       case 0:
-        return 'pink';
+        return 'transparent';
       case 1:
         return baseTheme.gameColors.one;
       case 2:
@@ -38,6 +38,18 @@ export const StyledCell = styled.div<CellProps>`
     }
   }};
   cursor: pointer;
+
+  &::after {
+    display: ${({ isOpen }) => (isOpen ? 'none' : 'block')};
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: blue;
+    opacity: 0.5;
+  }
 `;
 
 export const TimerBox = styled(Box)`

@@ -1,34 +1,53 @@
 import { shuffleArray } from '../../../global/helpers/shuffleArray';
 import { splitArrayIntoChunks } from '../../../global/helpers/splitArrayIntoChunks';
-import { GameLevels, LevelOption } from '../../common/bl/entities';
-import { GameCell } from './entities';
+import { GameCell, GameMatrix } from './entities';
 import { v4 } from 'uuid';
+import { HomeCommandRepo } from '../ds/repositories/commandRepo';
+import { GameLevelParams } from '../../common/bl/entities';
 
 export class GameUC {
   private width = 0;
   private height = 0;
-  private minesQty = 0;
+  private bombsQty = 0;
+  private matrix: GameCell[][] = [];
 
-  constructor(
-    private levelSettings: LevelOption,
-    private currentLevel: GameLevels
-  ) {
-    const currentSettings = this.levelSettings[this.currentLevel];
-    const { width, height, minesQty } = currentSettings;
+  constructor(private params: GameLevelParams, private repo: HomeCommandRepo) {
+    const { width, height, minesQty } = this.params;
     this.width = width;
     this.height = height;
-    this.minesQty = minesQty;
+    this.bombsQty = minesQty;
   }
 
-  public initGame = (): ReadonlyArray<ReadonlyArray<GameCell>> => {
+  public initGame = (): void => {
     const arrayWithBombs = this.createArrayWithBombs();
     const matrix = this.createMatrix(arrayWithBombs);
-    return matrix;
+
+    console.log('repo set matrix');
+    this.repo.setMatrix(matrix);
   };
 
-  private createMatrix = (
-    arr: ReadonlyArray<0 | 1>
-  ): ReadonlyArray<ReadonlyArray<GameCell>> => {
+  public onCellClick = (rowIndex: number, colIndex: number): void => {
+    console.log(`clicked on cell: row ${rowIndex} col ${colIndex}`);
+
+    this.repo.openCell(rowIndex, colIndex);
+
+    const matrixCell = this.matrix[rowIndex][colIndex];
+    console.log(matrixCell);
+
+    if (matrixCell.isBomb) {
+      this.repo.setIsAlive(false);
+      console.log('you loose');
+      return;
+    }
+
+    if (matrixCell.bombsAround === 0) {
+      console.log('this is empty');
+      // .. recursive opening cells
+      return;
+    }
+  };
+
+  private createMatrix = (arr: ReadonlyArray<0 | 1>): GameMatrix => {
     const matrix = splitArrayIntoChunks(arr, this.width);
     const infusedMatrix: Array<Array<GameCell>> = [];
 
@@ -86,11 +105,8 @@ export class GameUC {
       infusedMatrix.push(infusedRow);
     }
 
-    const readonlyInfusedMatrix: ReadonlyArray<ReadonlyArray<GameCell>> = [
-      ...infusedMatrix,
-    ];
-
-    return readonlyInfusedMatrix;
+    this.matrix = [...infusedMatrix];
+    return infusedMatrix;
   };
 
   private createArrayWithBombs = (): ReadonlyArray<0 | 1> => {
@@ -100,7 +116,7 @@ export class GameUC {
 
     for (let i = 0; i < totalCells; i++) {
       let cell: 0 | 1 = 0;
-      const canCreateBomb = totalBombsCreated < this.minesQty;
+      const canCreateBomb = totalBombsCreated < this.bombsQty;
 
       if (canCreateBomb) {
         totalBombsCreated++;

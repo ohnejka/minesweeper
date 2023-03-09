@@ -1,17 +1,10 @@
-import {
-  createContext,
-  FC,
-  PropsWithChildren,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
-import { useDispatch } from 'react-redux';
+import { createContext, FC, PropsWithChildren, useMemo, useState } from 'react';
+import { useSelector, useStore } from 'react-redux';
 import { GameLevels, LevelOption } from '../../../common/bl/entities';
-import { GameCell } from '../../bl/entities';
+import { RootState } from '../../../common/ds/store';
+import { GameMatrix } from '../../bl/entities';
 import { GameUC } from '../../bl/gameUC';
 import { HomeCommandRepo } from '../../ds/repositories/commandRepo';
-import { HomeQueryRepo } from '../../ds/repositories/queryRepo';
 
 export interface HomeContextState {
   readonly state: {
@@ -20,13 +13,14 @@ export interface HomeContextState {
     readonly levelSettings: LevelOption;
     readonly currentLevel: GameLevels;
     readonly time: number;
-    readonly gameKey: number;
+    readonly isAlive: boolean;
+    readonly matrix: GameMatrix;
   };
   readonly fns: {
     readonly handleLevelOptionChange: (level: GameLevels) => void;
     readonly handleStartNewGame: () => void;
     readonly handleUpdateTimer: () => void;
-    readonly initBoard: () => ReadonlyArray<ReadonlyArray<GameCell>>;
+    readonly onCellClick: (rowIndex: number, colIndex: number) => void;
   };
 }
 
@@ -35,29 +29,33 @@ export const HomeContext = createContext<HomeContextState>(
 );
 
 export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const store = useStore<RootState>();
+
+  const isAlive = useSelector((state: RootState) => state.game.isAlive);
+  const currentLevel = useSelector((state: RootState) => state.game.level);
+
+  const matrix = store.getState().game.matrix;
+  const levelSettings = useMemo(
+    () => store.getState().game.levelOptions,
+    [store]
+  );
+  const levelOptions = useMemo(
+    () => store.getState().game.levelOptionsNames,
+    [store]
+  );
+
   const [gameIsStarted, setGameIsStarted] = useState(false);
   const [timeInSeconds, setTime] = useState(0);
-  const [gameKey, setGameKey] = useState(0);
-
-  const homeQueryRepo = useMemo(() => {
-    return new HomeQueryRepo();
-  }, []);
-
-  const dispatch = useDispatch();
 
   const homeCommandRepo = useMemo(() => {
-    return new HomeCommandRepo(dispatch);
-  }, [dispatch]);
-
-  const levelSettings = homeQueryRepo.getLevelSettings();
-  const currentLevel = homeQueryRepo.getCurrentLevel();
-  const levelOptions = homeQueryRepo.getLevelsOptions();
+    return new HomeCommandRepo(store.dispatch);
+  }, [store]);
 
   const gameUC = useMemo(() => {
-    return new GameUC(levelSettings, currentLevel);
-  }, [levelSettings, currentLevel]);
-
-  const initBoard = useCallback(() => gameUC.initGame(), [gameUC]);
+    const params = levelSettings[currentLevel];
+    console.log('new UC: ', params);
+    return new GameUC(params, homeCommandRepo);
+  }, [currentLevel, levelSettings, homeCommandRepo]);
 
   const value: HomeContextState = {
     state: {
@@ -66,19 +64,18 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       levelOptions,
       levelSettings,
       currentLevel,
-      gameKey,
+      matrix,
+      isAlive,
     },
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {
         homeCommandRepo.setGameLevel(level);
-        gameUC.initGame();
-        setGameKey(gameKey + 1);
+        // gameUC.initGame();
         setGameIsStarted(false);
         setTime(0);
       },
       handleStartNewGame: () => {
         gameUC.initGame();
-        setGameKey(gameKey + 1);
         setGameIsStarted(true);
         setTime(0);
       },
@@ -86,7 +83,9 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
         const newTime = timeInSeconds + 1;
         setTime(newTime);
       },
-      initBoard,
+      onCellClick: (rowIndex: number, colIndex: number) => {
+        gameUC.onCellClick(rowIndex, colIndex);
+      },
     },
   };
 

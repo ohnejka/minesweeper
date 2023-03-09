@@ -1,5 +1,5 @@
 import { Divider, Grid, Typography } from '@mui/material';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   formatSeconds,
@@ -8,22 +8,14 @@ import {
 import { GameCell } from '../../bl/entities';
 import { HomeContext, HomeContextState } from '../context/homeContext';
 import { StyledCell, TimerBox } from './styled';
+import clsx from 'clsx';
 
 const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
   const { state, fns } = homeContext;
 
-  const { gameIsStarted, time, gameKey, currentLevel } = state;
-  const { handleUpdateTimer, initBoard } = fns;
-
-  const [gameCells, setGameCells] = useState(
-    [] as ReadonlyArray<ReadonlyArray<GameCell>>
-  );
-
-  useEffect(() => {
-    const gameSettings = initBoard();
-    setGameCells(gameSettings);
-  }, [initBoard, currentLevel, gameKey]);
+  const { gameIsStarted, time, matrix } = state;
+  const { handleUpdateTimer, onCellClick } = fns;
 
   useEffect(() => {
     let intervalId: any;
@@ -56,13 +48,22 @@ const Game: FC = () => {
         <Divider orientation='vertical' flexItem />
         <Typography variant='body1'>10 bombs left</Typography>
       </Grid>
-      <Grid item xs={6} style={{ display: 'flex', flexDirection: 'column' }}>
-        {gameCells.map((row: ReadonlyArray<GameCell>, index) => {
+      <div>width: {matrix.length}</div>
+      <Grid
+        item
+        xs={6}
+        style={{ display: 'flex', flexDirection: 'column' }}
+        className={clsx(!gameIsStarted && '--muted')}
+      >
+        {matrix.map((row: ReadonlyArray<GameCell>, rowIndex) => {
           return (
-            <div style={{ display: 'flex' }} key={index}>
-              {row.map((el: GameCell) => {
+            <div style={{ display: 'flex' }} key={rowIndex}>
+              {row.map((el: GameCell, elIndex) => {
                 return (
-                  <div key={el.id}>
+                  <div
+                    key={el.id}
+                    onClick={() => onCellClick(rowIndex, elIndex)}
+                  >
                     {!el.isBomb && (
                       <StyledCell
                         isOpen={el.isOpen}

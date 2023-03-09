@@ -4,8 +4,14 @@ export enum GameLevels {
   Hard = 'Hard',
 }
 
+export type GameLevelParams = {
+  width: number;
+  height: number;
+  minesQty: number;
+};
+
 export type LevelOption = {
-  [key in GameLevels]: { width: number; height: number; minesQty: number };
+  [key in GameLevels]: GameLevelParams;
 };
 
 export type PlayerRound = {
