@@ -48,7 +48,6 @@ const Game: FC = () => {
         <Divider orientation='vertical' flexItem />
         <Typography variant='body1'>10 bombs left</Typography>
       </Grid>
-      <div>width: {matrix.length}</div>
       <Grid
         item
         xs={6}

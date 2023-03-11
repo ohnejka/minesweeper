@@ -1,4 +1,11 @@
-import { createContext, FC, PropsWithChildren, useMemo, useState } from 'react';
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector, useStore } from 'react-redux';
 import { GameLevels, LevelOption } from '../../../common/bl/entities';
 import { RootState } from '../../../common/ds/store';
@@ -33,8 +40,8 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const isAlive = useSelector((state: RootState) => state.game.isAlive);
   const currentLevel = useSelector((state: RootState) => state.game.level);
+  const matrix = useSelector((state: RootState) => state.game.matrix);
 
-  const matrix = store.getState().game.matrix;
   const levelSettings = useMemo(
     () => store.getState().game.levelOptions,
     [store]
@@ -52,10 +59,20 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [store]);
 
   const gameUC = useMemo(() => {
-    const params = levelSettings[currentLevel];
-    console.log('new UC: ', params);
-    return new GameUC(params, homeCommandRepo);
-  }, [currentLevel, levelSettings, homeCommandRepo]);
+    return new GameUC(homeCommandRepo);
+  }, [homeCommandRepo]);
+
+  // . init gameboard
+  useEffect(() => {
+    gameUC.initGame(levelSettings[currentLevel]);
+  }, []);
+
+  // when level changes, update board and start
+  useEffect(() => {
+    gameUC.initGame(levelSettings[currentLevel]);
+    setGameIsStarted(false);
+    setTime(0);
+  }, [gameUC, levelSettings, currentLevel]);
 
   const value: HomeContextState = {
     state: {
@@ -70,12 +87,9 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {
         homeCommandRepo.setGameLevel(level);
-        // gameUC.initGame();
-        setGameIsStarted(false);
-        setTime(0);
       },
       handleStartNewGame: () => {
-        gameUC.initGame();
+        gameUC.initGame(levelSettings[currentLevel]);
         setGameIsStarted(true);
         setTime(0);
       },

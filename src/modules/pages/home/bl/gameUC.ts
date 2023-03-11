@@ -11,14 +11,14 @@ export class GameUC {
   private bombsQty = 0;
   private matrix: GameCell[][] = [];
 
-  constructor(private params: GameLevelParams, private repo: HomeCommandRepo) {
-    const { width, height, minesQty } = this.params;
+  constructor(private repo: HomeCommandRepo) {}
+
+  public initGame = (params: GameLevelParams): void => {
+    const { width, height, minesQty } = params;
     this.width = width;
     this.height = height;
     this.bombsQty = minesQty;
-  }
 
-  public initGame = (): void => {
     const arrayWithBombs = this.createArrayWithBombs();
     const matrix = this.createMatrix(arrayWithBombs);
 
