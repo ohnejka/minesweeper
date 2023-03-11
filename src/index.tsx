@@ -2,9 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './apps/App';
 import reportWebVitals from './reportWebVitals';
-import { persistor, store } from './modules/pages/common/ds/store';
+import { store } from './modules/pages/common/ds/store';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 import GlobalStyles from './modules/global/styles/global';
 
 const root = ReactDOM.createRoot(
@@ -14,10 +13,8 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <App />
-        <GlobalStyles />
-      </PersistGate>
+      <App />
+      <GlobalStyles />
     </Provider>
   </React.StrictMode>
 );
