@@ -65,6 +65,16 @@ const gameSlice = createSlice({
       const { cellRow, cellCol } = action.payload;
       state.matrix[cellRow][cellCol].isOpen = true;
     },
+    setCellArrayIsOpen(
+      state: GameState,
+      action: PayloadAction<Array<{ cellRow: number; cellCol: number }>>
+    ) {
+      const cellsArr = action.payload;
+
+      cellsArr.forEach((c) => {
+        state.matrix[c.cellRow][c.cellCol].isOpen = true;
+      });
+    },
     setUserStatus(state: GameState, action: PayloadAction<UserStatusCmd>) {
       const { row, col, status } = action.payload;
       state.matrix[row][col].status = status;
@@ -77,6 +87,7 @@ export const {
   setIsAlive,
   setMatrix,
   setCellIsOpen,
+  setCellArrayIsOpen,
   setUserStatus,
 } = gameSlice.actions;
 export default gameSlice.reducer;

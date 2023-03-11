@@ -43,12 +43,11 @@ export class GameUC {
     colIndex: number
   ): void => {
     const matrix = this.queryRepo.getMatrix();
+    const matrixCell = matrix[rowIndex][colIndex];
 
     // . right click
     if (e.type === 'contextmenu') {
       e.preventDefault();
-
-      const matrixCell = matrix[rowIndex][colIndex];
 
       let newStatus = CellUserStatus.Untouched;
 
@@ -68,31 +67,99 @@ export class GameUC {
       });
 
       // @TODO add check - if you flagged last bomb - you win
-
       return;
     }
 
     // . left click
     console.log(`clicked on cell: row ${rowIndex} col ${colIndex}`);
 
-    this.commandRepo.openCell(rowIndex, colIndex);
-    // @TODO add check - if open all non-bomb cells - you win
-
-    const matrixCell = matrix[rowIndex][colIndex];
-
+    // .. if bomb - game over
     if (matrixCell.isBomb) {
+      this.commandRepo.openCell(rowIndex, colIndex);
       this.commandRepo.setIsAlive(false);
-      console.log('you loose');
       return;
     }
 
+    // .. cell is empty - open recursively all empty cells
     if (matrixCell.bombsAround === 0) {
-      console.log('this is empty');
-      // .. recursive opening cells
-
+      this.openCellAndEmptyAround(matrixCell);
       // @TODO add check - if open all non-bomb cells - you win
       return;
     }
+
+    // .. cell has something inside
+    this.commandRepo.openCell(rowIndex, colIndex);
+    // @TODO add check - if open all non-bomb cells - you win
+  };
+
+  private openCellAndEmptyAround = (cell: GameCell) => {
+    const row = cell.rowIndex;
+    const col = cell.columnIndex;
+
+    const matrix = this.queryRepo.getMatrix();
+
+    const upRow = matrix[row - 1];
+    const bottomRow = matrix[row + 1];
+    const leftCol = matrix[row][col - 1];
+    const rightCol = matrix[row][col + 1];
+
+    const isTopRow = upRow === undefined;
+    const isBottomRow = bottomRow === undefined;
+    const isLeftCol = leftCol === undefined;
+    const isRightCol = rightCol === undefined;
+
+    const topLeftEl = isTopRow || isLeftCol ? null : upRow[col - 1];
+    const topEl = isTopRow ? null : upRow[col];
+    const topRight = isTopRow || isRightCol ? null : upRow[col + 1];
+    const right = isRightCol ? null : matrix[row][col + 1];
+    const bottomRight = isBottomRow || isRightCol ? null : bottomRow[col + 1];
+    const bottom = isBottomRow ? null : bottomRow[col];
+    const bottomLeft = isBottomRow || isLeftCol ? null : bottomRow[col - 1];
+    const left = isLeftCol ? null : matrix[row][col - 1];
+
+    const aroundArr = [
+      topLeftEl,
+      topEl,
+      topRight,
+      right,
+      bottomRight,
+      bottom,
+      bottomLeft,
+      left,
+    ];
+
+    // . get existing cells around
+    const existingCellsAround = aroundArr.filter((c: GameCell | null) => !!c);
+    const verifiedCellsAround = existingCellsAround as GameCell[];
+
+    // . add parent cell
+    verifiedCellsAround.push(cell);
+    // . get only closed
+    const verifiedAndClosedCells = verifiedCellsAround.filter((c) => !c.isOpen);
+
+    // . if no closed left - leave recursion
+    if (verifiedAndClosedCells.length === 0) {
+      return;
+    }
+
+    // . if there are closed - open them all
+    this.commandRepo.openCellArray(
+      verifiedAndClosedCells.map((c: GameCell) => {
+        return {
+          cellRow: c.rowIndex,
+          cellCol: c.columnIndex,
+        };
+      })
+    );
+
+    // . repeat recursively for empty cells
+    const emptyCells = aroundArr.filter(
+      (c: GameCell | null) => c && c.bombsAround === 0
+    );
+
+    (emptyCells as GameCell[]).forEach((c: GameCell) =>
+      this.openCellAndEmptyAround(c)
+    );
   };
 
   public setGameLevel = (level: GameLevels): void => {
@@ -155,6 +222,8 @@ export class GameUC {
           status: CellUserStatus.Untouched,
           bombsAround,
           id: v4(),
+          rowIndex: i,
+          columnIndex: k,
         };
 
         infusedRow.push(cell);

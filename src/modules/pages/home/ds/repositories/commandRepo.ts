@@ -1,6 +1,7 @@
 import { Dispatch } from 'react';
 import { GameLevels } from '../../../common/bl/entities';
 import {
+  setCellArrayIsOpen,
   setCellIsOpen,
   setGameLevel as setGameLevelRedux,
   setIsAlive,
@@ -30,6 +31,13 @@ export class HomeCommandRepo {
 
   public openCell = (cellRow: number, cellCol: number): void => {
     const payload = setCellIsOpen({ cellRow, cellCol });
+    this.dispatch(payload);
+  };
+
+  public openCellArray = (
+    cellsArr: Array<{ cellRow: number; cellCol: number }>
+  ): void => {
+    const payload = setCellArrayIsOpen(cellsArr);
     this.dispatch(payload);
   };
 

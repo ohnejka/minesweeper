@@ -11,6 +11,8 @@ export type GameCell = {
   status: CellUserStatus;
   isOpen: boolean;
   readonly id: string;
+  readonly rowIndex: number;
+  readonly columnIndex: number;
 };
 
 export type GameMatrix = Array<Array<GameCell>>;
