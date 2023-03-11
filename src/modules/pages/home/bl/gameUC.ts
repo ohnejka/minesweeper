@@ -3,7 +3,7 @@ import { splitArrayIntoChunks } from '../../../global/helpers/splitArrayIntoChun
 import { CellUserStatus, GameCell, GameMatrix } from './entities';
 import { v4 } from 'uuid';
 import { HomeCommandRepo } from '../ds/repositories/commandRepo';
-import { GameLevelParams } from '../../common/bl/entities';
+import { GameLevelParams, GameLevels } from '../../common/bl/entities';
 import { SyntheticEvent } from 'react';
 import { HomeQueryRepo } from '../ds/repositories/queryRepo';
 
@@ -27,6 +27,13 @@ export class GameUC {
     const matrix = this.createMatrix(arrayWithBombs);
 
     console.log('repo set matrix');
+
+    const isAlive = this.queryRepo.getIsAlive();
+
+    if (!isAlive) {
+      this.commandRepo.setIsAlive(true);
+    }
+
     this.commandRepo.setMatrix(matrix);
   };
 
@@ -59,6 +66,9 @@ export class GameUC {
         col: colIndex,
         status: newStatus,
       });
+
+      // @TODO add check - if you flagged last bomb - you win
+
       return;
     }
 
@@ -66,6 +76,7 @@ export class GameUC {
     console.log(`clicked on cell: row ${rowIndex} col ${colIndex}`);
 
     this.commandRepo.openCell(rowIndex, colIndex);
+    // @TODO add check - if open all non-bomb cells - you win
 
     const matrixCell = matrix[rowIndex][colIndex];
 
@@ -78,7 +89,18 @@ export class GameUC {
     if (matrixCell.bombsAround === 0) {
       console.log('this is empty');
       // .. recursive opening cells
+
+      // @TODO add check - if open all non-bomb cells - you win
       return;
+    }
+  };
+
+  public setGameLevel = (level: GameLevels): void => {
+    this.commandRepo.setGameLevel(level);
+
+    const isAlive = this.queryRepo.getIsAlive();
+    if (!isAlive) {
+      this.commandRepo.setIsAlive(true);
     }
   };
 

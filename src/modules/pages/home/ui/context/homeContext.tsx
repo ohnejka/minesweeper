@@ -91,7 +91,7 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
     },
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {
-        homeCommandRepo.setGameLevel(level);
+        gameUC.setGameLevel(level);
       },
       handleStartNewGame: () => {
         gameUC.initGame(levelSettings[currentLevel]);

@@ -13,4 +13,8 @@ export class HomeQueryRepo {
   public getMatrix = () => {
     return this.store.getState().game.matrix;
   };
+
+  public getIsAlive = () => {
+    return this.store.getState().game.isAlive;
+  };
 }

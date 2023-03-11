@@ -28,12 +28,12 @@ export class HomeCommandRepo {
     this.dispatch(payload);
   };
 
-  public openCell = (cellRow: number, cellCol: number) => {
+  public openCell = (cellRow: number, cellCol: number): void => {
     const payload = setCellIsOpen({ cellRow, cellCol });
     this.dispatch(payload);
   };
 
-  public setUserStatus = (cmd: UserStatusCmd) => {
+  public setUserStatus = (cmd: UserStatusCmd): void => {
     const payload = setUserStatus(cmd);
     this.dispatch(payload);
   };
