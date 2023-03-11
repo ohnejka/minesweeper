@@ -67,6 +67,13 @@ export class GameUC {
       });
 
       // @TODO add check - if you flagged last bomb - you win
+      const allBombsFlagged = this.checkIfAllBombsAreFlagged();
+
+      if (allBombsFlagged) {
+        console.log('all bombs flagged, you win!');
+        // @TODO: win story
+      }
+
       return;
     }
 
@@ -83,13 +90,23 @@ export class GameUC {
     // .. cell is empty - open recursively all empty cells
     if (matrixCell.bombsAround === 0) {
       this.openCellAndEmptyAround(matrixCell);
-      // @TODO add check - if open all non-bomb cells - you win
+
+      const allClearCellsOpen = this.checkIfAllClearCellsAreOpen();
+      if (allClearCellsOpen) {
+        console.log('all clear cells are open, you win');
+        // @TODO: win story
+      }
       return;
     }
 
     // .. cell has something inside
     this.commandRepo.openCell(rowIndex, colIndex);
-    // @TODO add check - if open all non-bomb cells - you win
+
+    const allClearCellsOpen = this.checkIfAllClearCellsAreOpen();
+    if (allClearCellsOpen) {
+      console.log('all clear cells are open, you win');
+      // @TODO: win story
+    }
   };
 
   private openCellAndEmptyAround = (cell: GameCell) => {
@@ -252,5 +269,40 @@ export class GameUC {
     }
 
     return shuffleArray(flatArray);
+  };
+
+  private checkIfAllBombsAreFlagged = (): boolean => {
+    const bombCells = this.queryRepo.getBombCells();
+
+    const matrix = this.queryRepo.getMatrix();
+    const checkedCells = matrix
+      .flat()
+      .filter((c: GameCell) => c.status === CellUserStatus.Flag);
+
+    if (checkedCells.length !== bombCells.length) {
+      return false;
+    }
+
+    const bombIds = bombCells.map((c) => c.id);
+    const checkedIds = checkedCells.map((c) => c.id);
+
+    const allBombsChecked = bombIds.every((id) => checkedIds.includes(id));
+
+    return allBombsChecked;
+  };
+
+  private checkIfAllClearCellsAreOpen = (): boolean => {
+    const bombCells = this.queryRepo.getBombCells();
+
+    const flatMatrix = this.queryRepo.getMatrix().flat();
+    const allCellsQty = flatMatrix.length;
+
+    const allOpenCells = flatMatrix.filter((c) => c.isOpen);
+
+    if (allOpenCells.length !== allCellsQty - bombCells.length) {
+      return false;
+    }
+
+    return true;
   };
 }

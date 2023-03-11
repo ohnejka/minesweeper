@@ -114,7 +114,7 @@ const Game: FC = () => {
                               <QuestionMarkIcon sx={{ color: 'blue' }} />
                             </span>
                           )}
-                        <div className={'hover-info'}>{JSON.stringify(el)}</div>
+                        {/* <div className={'hover-info'}>{JSON.stringify(el)}</div> */}
                       </StyledCell>
                     </div>
                   );

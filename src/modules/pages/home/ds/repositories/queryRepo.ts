@@ -17,4 +17,11 @@ export class HomeQueryRepo {
   public getIsAlive = () => {
     return this.store.getState().game.isAlive;
   };
+
+  public getBombCells = () => {
+    const allCells = this.store.getState().game.matrix.flat();
+    const bombCells = allCells.filter((c) => c.isBomb);
+
+    return bombCells;
+  };
 }

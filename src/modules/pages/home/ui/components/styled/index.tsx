@@ -31,8 +31,8 @@ export const StyledCell = styled.div<CellProps>`
   }
 
   &.--open {
-    /* cursor: none; */
-    /* pointer-events: none; */
+    cursor: none;
+    pointer-events: none;
     background-color: ${baseTheme.gameColors.openBackground};
     border: ${baseTheme.gameColors.openShadow};
     box-shadow: inset 0 0 1px ${baseTheme.gameColors.openShadow};
@@ -72,7 +72,7 @@ export const StyledCell = styled.div<CellProps>`
     }};
   }
 
-  .hover-info {
+  /* .hover-info {
     position: absolute;
     top: 0;
     right: -200px;
@@ -86,7 +86,7 @@ export const StyledCell = styled.div<CellProps>`
     .hover-info {
       display: block;
     }
-  }
+  } */
 `;
 
 export const TimerBox = styled(Box)`

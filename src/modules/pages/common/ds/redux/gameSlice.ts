@@ -13,6 +13,7 @@ export type GameState = {
   levelOptionsNames: GameLevels[];
   isAlive: boolean;
   matrix: GameCell[][];
+  bombCells: ReadonlyArray<GameCell>;
 };
 
 export type UserStatusCmd = {
@@ -43,6 +44,7 @@ const initialState: GameState = {
   levelOptionsNames: [GameLevels.Easy, GameLevels.Medium, GameLevels.Hard],
   isAlive: true,
   matrix: [],
+  bombCells: [],
 };
 
 const gameSlice = createSlice({
@@ -64,6 +66,7 @@ const gameSlice = createSlice({
     ) {
       const { cellRow, cellCol } = action.payload;
       state.matrix[cellRow][cellCol].isOpen = true;
+      state.matrix[cellRow][cellCol].status = CellUserStatus.Untouched;
     },
     setCellArrayIsOpen(
       state: GameState,
