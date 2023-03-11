@@ -1,14 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { GameLevels, LevelOption } from '../../bl/entities';
-import { GameCell, GameMatrix } from '../../../home/bl/entities';
+import {
+  CellUserStatus,
+  GameCell,
+  GameMatrix,
+} from '../../../home/bl/entities';
 
-type GameState = {
+export type GameState = {
   level: GameLevels;
   levelOptions: LevelOption;
   levelOptionsNames: GameLevels[];
   isAlive: boolean;
   matrix: GameCell[][];
+};
+
+export type UserStatusCmd = {
+  row: number;
+  col: number;
+  status: CellUserStatus;
 };
 
 const initialState: GameState = {
@@ -55,9 +65,18 @@ const gameSlice = createSlice({
       const { cellRow, cellCol } = action.payload;
       state.matrix[cellRow][cellCol].isOpen = true;
     },
+    setUserStatus(state: GameState, action: PayloadAction<UserStatusCmd>) {
+      const { row, col, status } = action.payload;
+      state.matrix[row][col].status = status;
+    },
   },
 });
 
-export const { setGameLevel, setIsAlive, setMatrix, setCellIsOpen } =
-  gameSlice.actions;
+export const {
+  setGameLevel,
+  setIsAlive,
+  setMatrix,
+  setCellIsOpen,
+  setUserStatus,
+} = gameSlice.actions;
 export default gameSlice.reducer;

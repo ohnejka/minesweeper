@@ -7,7 +7,7 @@ export type Player = {
   bestRounds: { [key in GameLevels]: number };
 };
 
-type PlayersState = {
+export type PlayersState = {
   players: Player[];
 };
 

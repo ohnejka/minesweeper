@@ -8,7 +8,10 @@ export const baseTheme = {
     six: 'aqua',
     seven: 'black',
     eight: 'white',
-    background: 'silver',
-    border: 'gray',
+    background: '#ced4da',
+    border: '#6c757d',
+    openBackground: '#adb5bd',
+    openShadow: '#495057',
+    bombedBackground: '#a4133c',
   },
 };

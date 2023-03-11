@@ -1,14 +1,16 @@
 import { Divider, Grid, Typography } from '@mui/material';
-import { FC, useContext, useEffect } from 'react';
+import { FC, SyntheticEvent, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   formatSeconds,
   TimerFormat,
 } from '../../../../global/helpers/formatSeconds';
-import { GameCell } from '../../bl/entities';
+import { CellUserStatus, GameCell } from '../../bl/entities';
 import { HomeContext, HomeContextState } from '../context/homeContext';
 import { StyledCell, TimerBox } from './styled';
 import clsx from 'clsx';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import FlagIcon from '@mui/icons-material/Flag';
 
 const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
@@ -61,24 +63,48 @@ const Game: FC = () => {
                 return (
                   <div
                     key={el.id}
-                    onClick={() => onCellClick(rowIndex, elIndex)}
+                    onClick={(e: SyntheticEvent) =>
+                      onCellClick(e, rowIndex, elIndex)
+                    }
+                    onContextMenu={(e: SyntheticEvent) =>
+                      onCellClick(e, rowIndex, elIndex)
+                    }
                   >
-                    {!el.isBomb && (
-                      <StyledCell
-                        isOpen={el.isOpen}
-                        bombsAround={el.bombsAround}
-                      >
-                        <span>{el.bombsAround}</span>
-                      </StyledCell>
-                    )}
-                    {el.isBomb && (
-                      <StyledCell
-                        isOpen={el.isOpen}
-                        bombsAround={el.bombsAround}
-                      >
-                        <span>💣</span>
-                      </StyledCell>
-                    )}
+                    <StyledCell
+                      isOpen={el.isOpen}
+                      bombsAround={el.bombsAround}
+                      className={clsx(
+                        !el.isOpen && '--closed',
+                        !el.isOpen &&
+                          el.status !== CellUserStatus.Untouched &&
+                          '--user-attribute',
+                        el.isOpen && '--open',
+                        el.isOpen && el.isBomb && '--bombed',
+                        el.isOpen && !el.isBomb && '--figure'
+                      )}
+                    >
+                      {el.isOpen && el.isBomb && <span>💣</span>}
+                      {el.isOpen && !el.isBomb && <span>{el.bombsAround}</span>}
+                      {!el.isOpen && el.status === CellUserStatus.Untouched && (
+                        <span>
+                          <Typography variant='body1'>
+                            {el.bombsAround}
+                          </Typography>
+                        </span>
+                      )}
+                      {!el.isOpen && el.status === CellUserStatus.Flag && (
+                        <span>
+                          <FlagIcon sx={{ color: 'red' }} />
+                        </span>
+                      )}
+
+                      {!el.isOpen && el.status === CellUserStatus.Question && (
+                        <span>
+                          <QuestionMarkIcon sx={{ color: 'blue' }} />
+                        </span>
+                      )}
+                      <div className={'hover-info'}>{JSON.stringify(el)}</div>
+                    </StyledCell>
                   </div>
                 );
               })}

@@ -5,8 +5,11 @@ import {
   setGameLevel as setGameLevelRedux,
   setIsAlive,
   setMatrix,
+  setUserStatus,
+  UserStatusCmd,
 } from '../../../common/ds/redux/gameSlice';
 import { GameMatrix } from '../../bl/entities';
+
 export class HomeCommandRepo {
   constructor(private dispatch: Dispatch<any>) {}
 
@@ -27,6 +30,11 @@ export class HomeCommandRepo {
 
   public openCell = (cellRow: number, cellCol: number) => {
     const payload = setCellIsOpen({ cellRow, cellCol });
+    this.dispatch(payload);
+  };
+
+  public setUserStatus = (cmd: UserStatusCmd) => {
+    const payload = setUserStatus(cmd);
     this.dispatch(payload);
   };
 }

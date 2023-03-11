@@ -1,17 +1,21 @@
 import { shuffleArray } from '../../../global/helpers/shuffleArray';
 import { splitArrayIntoChunks } from '../../../global/helpers/splitArrayIntoChunks';
-import { GameCell, GameMatrix } from './entities';
+import { CellUserStatus, GameCell, GameMatrix } from './entities';
 import { v4 } from 'uuid';
 import { HomeCommandRepo } from '../ds/repositories/commandRepo';
 import { GameLevelParams } from '../../common/bl/entities';
+import { SyntheticEvent } from 'react';
+import { HomeQueryRepo } from '../ds/repositories/queryRepo';
 
 export class GameUC {
   private width = 0;
   private height = 0;
   private bombsQty = 0;
-  private matrix: GameCell[][] = [];
 
-  constructor(private repo: HomeCommandRepo) {}
+  constructor(
+    private commandRepo: HomeCommandRepo,
+    private queryRepo: HomeQueryRepo
+  ) {}
 
   public initGame = (params: GameLevelParams): void => {
     const { width, height, minesQty } = params;
@@ -23,19 +27,50 @@ export class GameUC {
     const matrix = this.createMatrix(arrayWithBombs);
 
     console.log('repo set matrix');
-    this.repo.setMatrix(matrix);
+    this.commandRepo.setMatrix(matrix);
   };
 
-  public onCellClick = (rowIndex: number, colIndex: number): void => {
+  public onCellClick = (
+    e: SyntheticEvent,
+    rowIndex: number,
+    colIndex: number
+  ): void => {
+    const matrix = this.queryRepo.getMatrix();
+
+    // . right click
+    if (e.type === 'contextmenu') {
+      e.preventDefault();
+
+      const matrixCell = matrix[rowIndex][colIndex];
+
+      let newStatus = CellUserStatus.Untouched;
+
+      switch (matrixCell.status) {
+        case CellUserStatus.Untouched:
+          newStatus = CellUserStatus.Flag;
+          break;
+        case CellUserStatus.Flag:
+          newStatus = CellUserStatus.Question;
+          break;
+      }
+
+      this.commandRepo.setUserStatus({
+        row: rowIndex,
+        col: colIndex,
+        status: newStatus,
+      });
+      return;
+    }
+
+    // . left click
     console.log(`clicked on cell: row ${rowIndex} col ${colIndex}`);
 
-    this.repo.openCell(rowIndex, colIndex);
+    this.commandRepo.openCell(rowIndex, colIndex);
 
-    const matrixCell = this.matrix[rowIndex][colIndex];
-    console.log(matrixCell);
+    const matrixCell = matrix[rowIndex][colIndex];
 
     if (matrixCell.isBomb) {
-      this.repo.setIsAlive(false);
+      this.commandRepo.setIsAlive(false);
       console.log('you loose');
       return;
     }
@@ -95,6 +130,7 @@ export class GameUC {
           value: col,
           isBomb: Boolean(col),
           isOpen: false,
+          status: CellUserStatus.Untouched,
           bombsAround,
           id: v4(),
         };
@@ -105,7 +141,6 @@ export class GameUC {
       infusedMatrix.push(infusedRow);
     }
 
-    this.matrix = [...infusedMatrix];
     return infusedMatrix;
   };
 

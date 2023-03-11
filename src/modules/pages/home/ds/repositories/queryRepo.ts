@@ -1,16 +1,16 @@
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../common/ds/store';
+import { AnyAction, CombinedState, Store } from '@reduxjs/toolkit';
+import { GameState } from '../../../common/ds/redux/gameSlice';
+import { PlayersState } from '../../../common/ds/redux/playersSlice';
 
 export class HomeQueryRepo {
-  getLevelsOptions = () => {
-    return useSelector((state: RootState) => state.game.levelOptionsNames);
-  };
+  constructor(
+    private store: Store<
+      CombinedState<{ game: GameState; players: PlayersState }>,
+      AnyAction
+    >
+  ) {}
 
-  getLevelSettings = () => {
-    return useSelector((state: RootState) => state.game.levelOptions);
-  };
-
-  getCurrentLevel = () => {
-    return useSelector((state: RootState) => state.game.level);
+  public getMatrix = () => {
+    return this.store.getState().game.matrix;
   };
 }

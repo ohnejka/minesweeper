@@ -2,6 +2,7 @@ import {
   createContext,
   FC,
   PropsWithChildren,
+  SyntheticEvent,
   useEffect,
   useMemo,
   useState,
@@ -12,6 +13,7 @@ import { RootState } from '../../../common/ds/store';
 import { GameMatrix } from '../../bl/entities';
 import { GameUC } from '../../bl/gameUC';
 import { HomeCommandRepo } from '../../ds/repositories/commandRepo';
+import { HomeQueryRepo } from '../../ds/repositories/queryRepo';
 
 export interface HomeContextState {
   readonly state: {
@@ -27,7 +29,11 @@ export interface HomeContextState {
     readonly handleLevelOptionChange: (level: GameLevels) => void;
     readonly handleStartNewGame: () => void;
     readonly handleUpdateTimer: () => void;
-    readonly onCellClick: (rowIndex: number, colIndex: number) => void;
+    readonly onCellClick: (
+      e: SyntheticEvent,
+      rowIndex: number,
+      colIndex: number
+    ) => void;
   };
 }
 
@@ -58,16 +64,15 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
     return new HomeCommandRepo(store.dispatch);
   }, [store]);
 
+  const homeQueryRepo = useMemo(() => {
+    return new HomeQueryRepo(store);
+  }, [store]);
+
   const gameUC = useMemo(() => {
-    return new GameUC(homeCommandRepo);
-  }, [homeCommandRepo]);
+    return new GameUC(homeCommandRepo, homeQueryRepo);
+  }, [homeCommandRepo, homeQueryRepo]);
 
-  // . init gameboard
-  useEffect(() => {
-    gameUC.initGame(levelSettings[currentLevel]);
-  }, []);
-
-  // when level changes, update board and start
+  // . init and update on level change
   useEffect(() => {
     gameUC.initGame(levelSettings[currentLevel]);
     setGameIsStarted(false);
@@ -97,8 +102,8 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
         const newTime = timeInSeconds + 1;
         setTime(newTime);
       },
-      onCellClick: (rowIndex: number, colIndex: number) => {
-        gameUC.onCellClick(rowIndex, colIndex);
+      onCellClick: (e: SyntheticEvent, rowIndex: number, colIndex: number) => {
+        gameUC.onCellClick(e, rowIndex, colIndex);
       },
     },
   };

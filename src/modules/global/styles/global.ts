@@ -13,6 +13,6 @@ export default createGlobalStyle`
     .--muted {
         pointer-events: none;
         user-select: none;
-        opacity: 0.8;
+        opacity: 0.5;
     }
 `;

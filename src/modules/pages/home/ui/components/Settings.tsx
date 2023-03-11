@@ -56,7 +56,7 @@ const Settings: FC = () => {
         <Grid item xs={4}>
           <Box sx={{ display: 'flex' }}>
             <Button variant='contained' onClick={onStartNewGame}>
-              Start new game
+              Press to start
             </Button>
           </Box>
         </Grid>
