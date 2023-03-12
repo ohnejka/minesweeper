@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { GameLevels } from '../../bl/entities';
+import { v4 } from 'uuid';
 
 export type Player = {
-  username: string;
-  bestRounds: { [key in GameLevels]: number };
+  readonly id: string;
+  readonly username: string;
+  readonly level: GameLevels;
+  readonly timeInSeconds: number;
 };
 
 export type PlayersState = {
@@ -15,27 +18,21 @@ const initialState: PlayersState = {
   players: [],
 };
 
-interface PlayerRound {
-  readonly username: string;
-  readonly time: number;
-  readonly level: GameLevels;
-}
-
 const playersSlice = createSlice({
   name: 'players',
   initialState,
   reducers: {
-    addPlayer(state: PlayersState, action: PayloadAction<Player>) {
-      console.log('add player', action.payload);
-    },
-    updatePlayerRound(state: PlayersState, action: PayloadAction<PlayerRound>) {
-      console.log('update player roune', action.payload);
-
-      //. check if new time is better
-      // .. if yes, update
+    addPlayer(state: PlayersState, action: PayloadAction<Omit<Player, 'id'>>) {
+      const { username, level, timeInSeconds } = action.payload;
+      state.players.push({
+        id: v4(),
+        username,
+        level,
+        timeInSeconds,
+      });
     },
   },
 });
 
-export const { addPlayer, updatePlayerRound } = playersSlice.actions;
+export const { addPlayer } = playersSlice.actions;
 export default playersSlice.reducer;

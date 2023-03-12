@@ -12,8 +12,8 @@ import { GameLevels, LevelOption } from '../../../common/bl/entities';
 import { RootState } from '../../../common/ds/store';
 import { GameMatrix } from '../../bl/entities';
 import { GameUC } from '../../bl/gameUC';
-import { HomeCommandRepo } from '../../ds/repositories/commandRepo';
-import { HomeQueryRepo } from '../../ds/repositories/queryRepo';
+import { GameCommandRepo } from '../../ds/repositories/game/commandRepo';
+import { GameQueryRepo } from '../../ds/repositories/game/queryRepo';
 
 export interface HomeContextState {
   readonly state: {
@@ -36,6 +36,7 @@ export interface HomeContextState {
       rowIndex: number,
       colIndex: number
     ) => void;
+    readonly onPlayerAdded: () => void;
   };
 }
 
@@ -62,17 +63,17 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [gameIsStarted, setGameIsStarted] = useState(false);
   const [timeInSeconds, setTime] = useState(0);
 
-  const homeCommandRepo = useMemo(() => {
-    return new HomeCommandRepo(store.dispatch);
+  const gameCommandRepo = useMemo(() => {
+    return new GameCommandRepo(store.dispatch);
   }, [store]);
 
-  const homeQueryRepo = useMemo(() => {
-    return new HomeQueryRepo(store);
+  const gameQueryRepo = useMemo(() => {
+    return new GameQueryRepo(store);
   }, [store]);
 
   const gameUC = useMemo(() => {
-    return new GameUC(homeCommandRepo, homeQueryRepo);
-  }, [homeCommandRepo, homeQueryRepo]);
+    return new GameUC(gameCommandRepo, gameQueryRepo);
+  }, [gameCommandRepo, gameQueryRepo]);
 
   // . init and update on level change
   useEffect(() => {
@@ -90,8 +91,8 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       currentLevel,
       matrix,
       isAlive,
-      restBombsQty: homeQueryRepo.getFlaggedBombQty(),
-      isWin: homeQueryRepo.getIsWin(),
+      restBombsQty: gameQueryRepo.getFlaggedBombQty(),
+      isWin: gameQueryRepo.getIsWin(),
     },
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {
@@ -108,6 +109,9 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       },
       onCellClick: (e: SyntheticEvent, rowIndex: number, colIndex: number) => {
         gameUC.onCellClick(e, rowIndex, colIndex, timeInSeconds);
+      },
+      onPlayerAdded: () => {
+        gameUC.onPlayerAdded();
       },
     },
   };

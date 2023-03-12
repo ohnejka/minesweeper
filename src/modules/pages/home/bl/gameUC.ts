@@ -2,10 +2,10 @@ import { shuffleArray } from '../../../global/helpers/shuffleArray';
 import { splitArrayIntoChunks } from '../../../global/helpers/splitArrayIntoChunks';
 import { CellUserStatus, GameCell, GameMatrix } from './entities';
 import { v4 } from 'uuid';
-import { HomeCommandRepo } from '../ds/repositories/commandRepo';
+import { GameCommandRepo } from '../ds/repositories/game/commandRepo';
 import { GameLevelParams, GameLevels } from '../../common/bl/entities';
 import { SyntheticEvent } from 'react';
-import { HomeQueryRepo } from '../ds/repositories/queryRepo';
+import { GameQueryRepo } from '../ds/repositories/game/queryRepo';
 
 export class GameUC {
   private width = 0;
@@ -13,8 +13,8 @@ export class GameUC {
   private bombsQty = 0;
 
   constructor(
-    private commandRepo: HomeCommandRepo,
-    private queryRepo: HomeQueryRepo
+    private commandRepo: GameCommandRepo,
+    private queryRepo: GameQueryRepo
   ) {}
 
   public initGame = (params: GameLevelParams): void => {
@@ -190,6 +190,10 @@ export class GameUC {
     if (!isAlive) {
       this.commandRepo.setIsAlive(true);
     }
+  };
+
+  public onPlayerAdded = (): void => {
+    this.commandRepo.setIsWin(false);
   };
 
   private createMatrix = (arr: ReadonlyArray<0 | 1>): GameMatrix => {

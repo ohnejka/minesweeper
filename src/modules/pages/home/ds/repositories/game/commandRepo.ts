@@ -1,5 +1,5 @@
 import { Dispatch } from 'react';
-import { GameLevels } from '../../../common/bl/entities';
+import { GameLevels } from '../../../../common/bl/entities';
 import {
   setCellArrayIsOpen,
   setCellIsOpen,
@@ -9,10 +9,10 @@ import {
   setMatrix,
   setUserStatus,
   UserStatusCmd,
-} from '../../../common/ds/redux/gameSlice';
-import { GameMatrix } from '../../bl/entities';
+} from '../../../../common/ds/redux/gameSlice';
+import { GameMatrix } from '../../../bl/entities';
 
-export class HomeCommandRepo {
+export class GameCommandRepo {
   constructor(private dispatch: Dispatch<any>) {}
 
   public setGameLevel = (level: GameLevels): void => {

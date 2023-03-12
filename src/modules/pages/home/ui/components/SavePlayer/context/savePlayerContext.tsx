@@ -6,6 +6,10 @@ import {
   useMemo,
 } from 'react';
 import { Control, useForm } from 'react-hook-form';
+import { useStore } from 'react-redux';
+import { GameLevels } from '../../../../../common/bl/entities';
+import { RootState } from '../../../../../common/ds/store';
+import { PlayersCommandRepo } from '../../../../ds/repositories/players/commandRepo';
 
 export type SavePlayerContextStateForm = {
   name: string;
@@ -21,13 +25,21 @@ export type SavePLayerContext = {
   };
 };
 
+type SavePlayerContextProviderProps = {
+  time: number;
+  level: GameLevels;
+  onAfterPlayerAdded: () => void;
+};
+
 export const SavePlayerContext = createContext<SavePLayerContext>(
   {} as SavePLayerContext
 );
 
-export const SavePLayerContextProvider: FC<
-  PropsWithChildren<{ time: number }>
-> = ({ time, children }) => {
+export const SavePlayerContextProvider: FC<
+  PropsWithChildren<SavePlayerContextProviderProps>
+> = ({ time, level, onAfterPlayerAdded, children }) => {
+  const store = useStore<RootState>();
+
   const { register, handleSubmit, control } =
     useForm<SavePlayerContextStateForm>({
       defaultValues: {
@@ -36,8 +48,8 @@ export const SavePLayerContextProvider: FC<
     });
 
   const onSubmit = handleSubmit((data: SavePlayerContextStateForm) => {
-    console.log('on submit!');
-    console.log();
+    playersCommandRepo.addNewPlayer(data.name, time, level);
+    onAfterPlayerAdded();
   });
 
   useEffect(() => {
@@ -50,6 +62,10 @@ export const SavePLayerContextProvider: FC<
     });
   }, [register]);
 
+  const playersCommandRepo = useMemo(() => {
+    return new PlayersCommandRepo(store.dispatch);
+  }, [store]);
+
   const value = useMemo(() => {
     return {
       state: {
@@ -60,7 +76,7 @@ export const SavePLayerContextProvider: FC<
         onSubmit,
       },
     };
-  }, []);
+  }, [control, time, onSubmit]);
 
   return (
     <SavePlayerContext.Provider value={value}>

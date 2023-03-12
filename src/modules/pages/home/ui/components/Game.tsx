@@ -30,8 +30,16 @@ const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
   const { state, fns } = homeContext;
 
-  const { gameIsStarted, time, matrix, isAlive, restBombsQty, isWin } = state;
-  const { handleUpdateTimer, onCellClick } = fns;
+  const {
+    gameIsStarted,
+    time,
+    matrix,
+    isAlive,
+    restBombsQty,
+    isWin,
+    currentLevel,
+  } = state;
+  const { handleUpdateTimer, onCellClick, onPlayerAdded } = fns;
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -52,29 +60,22 @@ const Game: FC = () => {
 
   const formattedTime: TimerFormat = formatSeconds(time);
 
-  /* start Popover */
   const baseForPopupRef = useRef(null);
 
   useEffect(() => {
     setAnchorEl(baseForPopupRef.current);
   }, []);
 
-  const closePopover = () => {
-    setAnchorEl(null);
-  };
-
-  const onWinPopoverClose = (e: SyntheticEvent, reason: string) => {
+  const onWinPopoverClose = (e: SyntheticEvent, reason: string): void => {
     if (reason && reason === 'backdropClick') {
       return;
     }
-
-    // . тут будет сабмит формы
-    // . и закрытие поповера
-    console.log('on Popove Close');
-    closePopover();
   };
 
-  /* end Popover */
+  const afterPlayerAdded = (): void => {
+    onPlayerAdded();
+    setAnchorEl(null);
+  };
 
   return (
     <Grid
@@ -174,24 +175,30 @@ const Game: FC = () => {
         )}
       </Box>
 
-      <Popover
-        id={v4()}
-        open={isWin}
-        anchorEl={anchorEl}
-        onClose={onWinPopoverClose}
-        anchorOrigin={{
-          vertical: 'center',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'center',
-          horizontal: 'center',
-        }}
-      >
-        <StyledDiv>
-          <SavePlayer time={time} />
-        </StyledDiv>
-      </Popover>
+      {anchorEl && isWin && (
+        <Popover
+          id={v4()}
+          open={isWin}
+          anchorEl={anchorEl}
+          onClose={onWinPopoverClose}
+          anchorOrigin={{
+            vertical: 'center',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'center',
+            horizontal: 'center',
+          }}
+        >
+          <StyledDiv>
+            <SavePlayer
+              time={time}
+              level={currentLevel}
+              onAfterPlayerAdded={afterPlayerAdded}
+            />
+          </StyledDiv>
+        </Popover>
+      )}
     </Grid>
   );
 };

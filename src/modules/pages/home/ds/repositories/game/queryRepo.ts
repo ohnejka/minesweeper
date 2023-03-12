@@ -1,9 +1,10 @@
 import { AnyAction, CombinedState, Store } from '@reduxjs/toolkit';
-import { GameState } from '../../../common/ds/redux/gameSlice';
-import { PlayersState } from '../../../common/ds/redux/playersSlice';
-import { CellUserStatus } from '../../bl/entities';
+import { GameLevels } from '../../../../common/bl/entities';
+import { GameState } from '../../../../common/ds/redux/gameSlice';
+import { PlayersState } from '../../../../common/ds/redux/playersSlice';
+import { CellUserStatus } from '../../../bl/entities';
 
-export class HomeQueryRepo {
+export class GameQueryRepo {
   constructor(
     private store: Store<
       CombinedState<{ game: GameState; players: PlayersState }>,
@@ -39,5 +40,9 @@ export class HomeQueryRepo {
 
   public getIsWin = () => {
     return this.store.getState().game.isWin;
+  };
+
+  public getCurrentLevelName = (): GameLevels => {
+    return this.store.getState().game.level;
   };
 }

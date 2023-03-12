@@ -10,7 +10,7 @@ import { withContext } from '../../../../../../global/react/WithContext';
 import { TimerBox } from '../../styled';
 import {
   SavePlayerContext,
-  SavePLayerContextProvider,
+  SavePlayerContextProvider,
 } from '../context/savePlayerContext';
 
 const SavePlayerInner: FC = () => {
@@ -69,6 +69,6 @@ const StyledSection = styled.section`
 `;
 
 export const SavePlayer = withContext(
-  SavePLayerContextProvider,
+  SavePlayerContextProvider,
   SavePlayerInner
 );
