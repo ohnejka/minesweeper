@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { FC, ChangeEvent, useContext } from 'react';
 import styled from 'styled-components';
+import { baseTheme } from '../../../../global/styles/theme';
 import { GameLevels } from '../../../common/bl/entities';
 import { HomeContext, HomeContextState } from '../context/homeContext';
 
@@ -29,41 +30,61 @@ const Settings: FC = () => {
   };
 
   return (
-    <>
-      <Grid container direction='column' alignItems='center' spacing={2}>
-        <Grid item xs={4}>
-          <FormControl>
-            <RadioGroup
-              aria-labelledby='game-level-options'
-              name='game-level-options'
-              row
-              value={currentLevel}
-              onChange={onOptionChange}
-            >
-              {levelOptions &&
-                levelOptions.map((option: GameLevels) => (
-                  <FormControlLabel
-                    key={option}
-                    value={option}
-                    control={<Radio />}
-                    label={option}
-                  />
-                ))}
-            </RadioGroup>
-          </FormControl>
-        </Grid>
-
-        <Grid item xs={4}>
-          <Box sx={{ display: 'flex' }}>
-            <Button variant='contained' onClick={onStartNewGame}>
-              Press to start
-            </Button>
-          </Box>
-        </Grid>
+    <Grid container direction='column' alignItems='center' spacing={1}>
+      <Grid item xs={4}>
+        <FormControl>
+          <RadioGroup
+            aria-labelledby='game-level-options'
+            name='game-level-options'
+            row
+            value={currentLevel}
+            onChange={onOptionChange}
+          >
+            {levelOptions &&
+              levelOptions.map((option: GameLevels) => (
+                <FormControlLabel
+                  key={option}
+                  value={option}
+                  control={
+                    <Radio
+                      sx={{
+                        fontFamily: 'monospace',
+                        color: baseTheme.layout.gray12,
+                        '&.Mui-checked': {
+                          color: baseTheme.layout.accent2,
+                        },
+                      }}
+                    />
+                  }
+                  label={option}
+                />
+              ))}
+          </RadioGroup>
+        </FormControl>
       </Grid>
-    </>
+
+      <Grid item xs={4}>
+        <Box sx={{ display: 'flex' }}>
+          <Button
+            variant='outlined'
+            color='error'
+            onClick={onStartNewGame}
+            startIcon='👉'
+            endIcon='👈'
+            sx={{ fontFamily: 'monospace', fontSize: 20 }}
+          >
+            {`Press to start`}
+          </Button>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
+
+// const StyledButton = styled(Button)`
+//   border-color: ${baseTheme.layout.accent2};
+//   color: ${baseTheme.layout.accent2};
+// `;
 
 const StyledSettings = styled(Settings)`
   display: flex;

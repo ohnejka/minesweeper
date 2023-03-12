@@ -4,6 +4,7 @@ import App from './apps/App';
 import reportWebVitals from './reportWebVitals';
 import { persistor, store } from './modules/pages/common/ds/store';
 import { Provider } from 'react-redux';
+import NormalizeCSS from './modules/global/styles/normalize';
 import GlobalStyles from './modules/global/styles/global';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -16,6 +17,7 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <App />
+        <NormalizeCSS />
         <GlobalStyles />
       </PersistGate>
     </Provider>

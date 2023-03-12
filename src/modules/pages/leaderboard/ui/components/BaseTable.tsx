@@ -15,13 +15,16 @@ const BaseTable: FC<TableProps> = ({ players }) => {
           <span>game time</span>
         </li>
       </ul>
+
       <ul className='table__row table__row--body'>
-        {players.map((player: Player) => (
-          <li className='table__item' key={player.id}>
-            <span>{player.username}</span>
-            <span>{player.timeInSeconds}</span>
-          </li>
-        ))}
+        {players.length > 0 &&
+          players.map((player: Player) => (
+            <li className='table__item' key={player.id}>
+              <span>{player.username}</span>
+              <span>{player.timeInSeconds}</span>
+            </li>
+          ))}
+        {players.length === 0 && <div>No leaders on this level yet...</div>}
       </ul>
     </section>
   );
