@@ -28,4 +28,8 @@ export default createGlobalStyle`
         white-space: nowrap !important;
         opacity: 0 !important;
     }
+
+    ul {
+        list-style: none;
+    }
 `;

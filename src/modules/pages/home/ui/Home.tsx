@@ -4,7 +4,7 @@ import StyledSettings from './components/Settings';
 
 const Home: FC = () => {
   return (
-    <div>
+    <div className='home'>
       <StyledSettings />
       <StyledGame />
     </div>

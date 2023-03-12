@@ -1,9 +1,10 @@
 import { FC } from 'react';
+import { LeaderTable } from './components/LeaderTable';
 
 const Leaderboard: FC = () => {
   return (
-    <div>
-      <div>this is leaderboard</div>
+    <div className='leaderboard'>
+      <LeaderTable />
     </div>
   );
 };
