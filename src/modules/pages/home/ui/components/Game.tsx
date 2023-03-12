@@ -1,5 +1,12 @@
-import { Box, Divider, Grid, Typography } from '@mui/material';
-import { FC, SyntheticEvent, useContext, useEffect } from 'react';
+import { Box, Divider, Grid, Popover, Typography } from '@mui/material';
+import {
+  FC,
+  SyntheticEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import {
   formatSeconds,
@@ -7,22 +14,31 @@ import {
 } from '../../../../global/helpers/formatSeconds';
 import { CellUserStatus, GameCell } from '../../bl/entities';
 import { HomeContext, HomeContextState } from '../context/homeContext';
-import { StyledCell, StyledGameOverBanner, TimerBox } from './styled';
+import {
+  StyledCell,
+  StyledDiv,
+  StyledGameOverBanner,
+  TimerBox,
+} from './styled';
 import clsx from 'clsx';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import FlagIcon from '@mui/icons-material/Flag';
+import { v4 } from 'uuid';
+import { SavePlayer } from './SavePlayer/ui';
 
 const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
   const { state, fns } = homeContext;
 
-  const { gameIsStarted, time, matrix, isAlive, restBombsQty } = state;
+  const { gameIsStarted, time, matrix, isAlive, restBombsQty, isWin } = state;
   const { handleUpdateTimer, onCellClick } = fns;
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     let intervalId: any;
 
-    if (!isAlive) {
+    if (!isAlive || isWin) {
       clearInterval(intervalId);
       return;
     }
@@ -32,9 +48,33 @@ const Game: FC = () => {
     }
 
     return () => clearInterval(intervalId);
-  }, [gameIsStarted, handleUpdateTimer, time, isAlive]);
+  }, [gameIsStarted, handleUpdateTimer, time, isAlive, isWin]);
 
   const formattedTime: TimerFormat = formatSeconds(time);
+
+  /* start Popover */
+  const baseForPopupRef = useRef(null);
+
+  useEffect(() => {
+    setAnchorEl(baseForPopupRef.current);
+  }, []);
+
+  const closePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const onWinPopoverClose = (e: SyntheticEvent, reason: string) => {
+    if (reason && reason === 'backdropClick') {
+      return;
+    }
+
+    // . тут будет сабмит формы
+    // . и закрытие поповера
+    console.log('on Popove Close');
+    closePopover();
+  };
+
+  /* end Popover */
 
   return (
     <Grid
@@ -43,6 +83,7 @@ const Game: FC = () => {
       alignItems='center'
       spacing={2}
       marginTop={2}
+      ref={baseForPopupRef}
     >
       <Grid item xs={6} style={{ display: 'flex', gap: '10px' }}>
         <TimerBox>
@@ -132,6 +173,25 @@ const Game: FC = () => {
           </StyledGameOverBanner>
         )}
       </Box>
+
+      <Popover
+        id={v4()}
+        open={isWin}
+        anchorEl={anchorEl}
+        onClose={onWinPopoverClose}
+        anchorOrigin={{
+          vertical: 'center',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'center',
+        }}
+      >
+        <StyledDiv>
+          <SavePlayer time={time} />
+        </StyledDiv>
+      </Popover>
     </Grid>
   );
 };

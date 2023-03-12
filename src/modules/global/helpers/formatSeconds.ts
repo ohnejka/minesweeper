@@ -9,11 +9,13 @@ export const formatSeconds = (totalSeconds: number): TimerFormat => {
   const m = minutes < 10 ? `0${minutes}` : `${minutes}`;
   const s = seconds < 10 ? `0${seconds}` : `${seconds}`;
 
-  return { h, m, s };
+  return { h, m, s, withHours: hours > 0, withMinutes: minutes > 0 };
 };
 
 export type TimerFormat = {
   h: string;
   m: string;
   s: string;
+  withHours: boolean;
+  withMinutes: boolean;
 };

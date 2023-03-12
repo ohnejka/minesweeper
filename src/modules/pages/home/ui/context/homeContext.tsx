@@ -25,6 +25,7 @@ export interface HomeContextState {
     readonly isAlive: boolean;
     readonly matrix: GameMatrix;
     readonly restBombsQty: number;
+    readonly isWin: boolean;
   };
   readonly fns: {
     readonly handleLevelOptionChange: (level: GameLevels) => void;
@@ -90,6 +91,7 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       matrix,
       isAlive,
       restBombsQty: homeQueryRepo.getFlaggedBombQty(),
+      isWin: homeQueryRepo.getIsWin(),
     },
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {
@@ -105,7 +107,7 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setTime(newTime);
       },
       onCellClick: (e: SyntheticEvent, rowIndex: number, colIndex: number) => {
-        gameUC.onCellClick(e, rowIndex, colIndex);
+        gameUC.onCellClick(e, rowIndex, colIndex, timeInSeconds);
       },
     },
   };

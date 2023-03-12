@@ -36,4 +36,8 @@ export class HomeQueryRepo {
 
     return bombQty - flaggedQty;
   };
+
+  public getIsWin = () => {
+    return this.store.getState().game.isWin;
+  };
 }

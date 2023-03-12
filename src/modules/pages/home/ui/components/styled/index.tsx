@@ -104,3 +104,9 @@ export const StyledGameOverBanner = styled.div`
   justify-content: center;
   color: ${baseTheme.gameColors.bombedBackground};
 `;
+
+export const StyledDiv = styled.div`
+  padding: 20px;
+  width: 350px;
+  min-height: 150px;
+`;

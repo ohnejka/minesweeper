@@ -5,6 +5,7 @@ import {
   setCellIsOpen,
   setGameLevel as setGameLevelRedux,
   setIsAlive,
+  setIsWin,
   setMatrix,
   setUserStatus,
   UserStatusCmd,
@@ -43,6 +44,11 @@ export class HomeCommandRepo {
 
   public setUserStatus = (cmd: UserStatusCmd): void => {
     const payload = setUserStatus(cmd);
+    this.dispatch(payload);
+  };
+
+  public setIsWin = (status: boolean): void => {
+    const payload = setIsWin(status);
     this.dispatch(payload);
   };
 }

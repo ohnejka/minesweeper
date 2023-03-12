@@ -40,7 +40,8 @@ export class GameUC {
   public onCellClick = (
     e: SyntheticEvent,
     rowIndex: number,
-    colIndex: number
+    colIndex: number,
+    timeInSeconds: number
   ): void => {
     const matrix = this.queryRepo.getMatrix();
     const matrixCell = matrix[rowIndex][colIndex];
@@ -48,6 +49,10 @@ export class GameUC {
     // . right click
     if (e.type === 'contextmenu') {
       e.preventDefault();
+
+      if (matrixCell.isOpen) {
+        return;
+      }
 
       let newStatus = CellUserStatus.Untouched;
 
@@ -66,12 +71,11 @@ export class GameUC {
         status: newStatus,
       });
 
-      // @TODO add check - if you flagged last bomb - you win
       const allBombsFlagged = this.checkIfAllBombsAreFlagged();
 
       if (allBombsFlagged) {
-        console.log('all bombs flagged, you win!');
-        // @TODO: win story
+        console.log('all bombs flagged, you WIN!');
+        this.commandRepo.setIsWin(true);
       }
 
       return;
@@ -93,8 +97,8 @@ export class GameUC {
 
       const allClearCellsOpen = this.checkIfAllClearCellsAreOpen();
       if (allClearCellsOpen) {
-        console.log('all clear cells are open, you win');
-        // @TODO: win story
+        console.log('all clear cells are open, you WIN');
+        this.commandRepo.setIsWin(true);
       }
       return;
     }
@@ -104,8 +108,8 @@ export class GameUC {
 
     const allClearCellsOpen = this.checkIfAllClearCellsAreOpen();
     if (allClearCellsOpen) {
-      console.log('all clear cells are open, you win');
-      // @TODO: win story
+      console.log('all clear cells are open, you WIN');
+      this.commandRepo.setIsWin(true);
     }
   };
 
