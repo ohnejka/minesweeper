@@ -16,7 +16,7 @@ const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
   const { state, fns } = homeContext;
 
-  const { gameIsStarted, time, matrix, isAlive } = state;
+  const { gameIsStarted, time, matrix, isAlive, restBombsQty } = state;
   const { handleUpdateTimer, onCellClick } = fns;
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const Game: FC = () => {
           <Typography variant='body1'>{formattedTime.s}</Typography>
         </TimerBox>
         <Divider orientation='vertical' flexItem />
-        <Typography variant='body1'>10 bombs left</Typography>
+        <Typography variant='body1'>{restBombsQty} bombs left</Typography>
       </Grid>
       <Box style={{ position: 'relative' }}>
         <Box

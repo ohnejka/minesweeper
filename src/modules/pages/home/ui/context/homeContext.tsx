@@ -24,6 +24,7 @@ export interface HomeContextState {
     readonly time: number;
     readonly isAlive: boolean;
     readonly matrix: GameMatrix;
+    readonly restBombsQty: number;
   };
   readonly fns: {
     readonly handleLevelOptionChange: (level: GameLevels) => void;
@@ -88,6 +89,7 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       currentLevel,
       matrix,
       isAlive,
+      restBombsQty: homeQueryRepo.getFlaggedBombQty(),
     },
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {

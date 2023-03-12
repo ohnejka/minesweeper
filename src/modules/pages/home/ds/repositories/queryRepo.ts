@@ -1,6 +1,7 @@
 import { AnyAction, CombinedState, Store } from '@reduxjs/toolkit';
 import { GameState } from '../../../common/ds/redux/gameSlice';
 import { PlayersState } from '../../../common/ds/redux/playersSlice';
+import { CellUserStatus } from '../../bl/entities';
 
 export class HomeQueryRepo {
   constructor(
@@ -23,5 +24,16 @@ export class HomeQueryRepo {
     const bombCells = allCells.filter((c) => c.isBomb);
 
     return bombCells;
+  };
+
+  public getFlaggedBombQty = () => {
+    const allCells = this.store.getState().game.matrix.flat();
+
+    const bombQty = allCells.filter((c) => c.isBomb).length;
+    const flaggedQty = allCells.filter(
+      (c) => c.status === CellUserStatus.Flag
+    ).length;
+
+    return bombQty - flaggedQty;
   };
 }
