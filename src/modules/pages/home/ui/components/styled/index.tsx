@@ -155,5 +155,6 @@ export const StyledGameBox = styled.div<{
   @media (min-width: 1024px) {
     justify-content: center;
     overflow-x: auto;
+    overflow-y: hidden;
   }
 `;
