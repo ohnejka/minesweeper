@@ -37,6 +37,7 @@ export interface HomeContextState {
       rowIndex: number,
       colIndex: number
     ) => void;
+    readonly onLongTouch: (rowIndex: number, colIndex: number) => void;
     readonly onPlayerAdded: () => void;
   };
 }
@@ -138,6 +139,9 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       },
       onCellClick: (e: SyntheticEvent, rowIndex: number, colIndex: number) => {
         gameUC.onCellClick(e, rowIndex, colIndex);
+      },
+      onLongTouch: (rowIndex: number, colIndex: number) => {
+        gameUC.onLongTouch(rowIndex, colIndex);
       },
       onPlayerAdded: () => {
         gameUC.onPlayerAdded();

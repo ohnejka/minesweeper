@@ -1,10 +1,11 @@
 import { Box, Typography } from '@mui/material';
 import clsx from 'clsx';
-import { FC, memo, SyntheticEvent } from 'react';
+import { FC, memo, SyntheticEvent, useCallback } from 'react';
 import { GameCell, CellUserStatus } from '../../bl/entities';
 import { StyledCell } from './styled';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import FlagIcon from '@mui/icons-material/Flag';
+import useLongPress from '../../bl/helpers/useLongPress';
 
 type BoardProps = {
   readonly gameIsStarted: boolean;
@@ -15,6 +16,7 @@ type BoardProps = {
     rowIndex: number,
     elIndex: number
   ) => void;
+  readonly onLongTouch: (rowIndex: number, elIndex: number) => void;
 };
 
 export const Board: FC<BoardProps> = ({
@@ -22,7 +24,17 @@ export const Board: FC<BoardProps> = ({
   isAlive,
   matrix,
   onCellClick,
+  onLongTouch,
 }) => {
+  const longTouchEndCb = useCallback(
+    (rowIndex: number, elIndex: number) => {
+      onLongTouch(rowIndex, elIndex);
+    },
+    [onLongTouch]
+  );
+
+  const { handlers } = useLongPress({ longTouchEndCb });
+
   return (
     <Box
       style={{
@@ -44,6 +56,8 @@ export const Board: FC<BoardProps> = ({
                   onContextMenu={(e: SyntheticEvent) =>
                     onCellClick(e, rowIndex, elIndex)
                   }
+                  onTouchEnd={() => handlers.onTouchEnd(rowIndex, elIndex)}
+                  onTouchStart={() => handlers.onTouchStart}
                 >
                   <StyledCell
                     isOpen={el.isOpen}

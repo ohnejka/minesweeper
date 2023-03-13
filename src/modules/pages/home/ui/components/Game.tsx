@@ -36,7 +36,7 @@ const Game: FC = () => {
     isWin,
     currentLevel,
   } = state;
-  const { onCellClick, onPlayerAdded } = fns;
+  const { onCellClick, onLongTouch, onPlayerAdded } = fns;
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -81,6 +81,7 @@ const Game: FC = () => {
             isAlive={isAlive}
             matrix={matrix}
             onCellClick={onCellClick}
+            onLongTouch={onLongTouch}
           />
           {!isAlive && (
             <StyledGameOverBanner>
