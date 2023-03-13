@@ -71,22 +71,6 @@ export const StyledCell = styled.div<CellProps>`
       }
     }};
   }
-
-  /* .hover-info {
-    position: absolute;
-    top: 0;
-    right: -200px;
-    width: 100px;
-    height: 10px;
-    display: none;
-    z-index: 1;
-  }
-
-  &:hover {
-    .hover-info {
-      display: block;
-    }
-  } */
 `;
 
 export const TimerBox = styled(Box)`

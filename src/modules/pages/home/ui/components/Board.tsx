@@ -78,7 +78,6 @@ export const Board: FC<BoardProps> = ({
                         <QuestionMarkIcon sx={{ color: 'blue' }} />
                       </span>
                     )}
-                    {/* <div className={'hover-info'}>{JSON.stringify(el)}</div> */}
                   </StyledCell>
                 </div>
               );

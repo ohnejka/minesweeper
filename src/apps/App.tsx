@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -20,6 +20,9 @@ const router = createBrowserRouter(
 );
 
 const App: FC = () => {
+  useEffect(() => {
+    console.log('created with 💖 by ohnejka');
+  }, []);
   return <RouterProvider router={router} />;
 };
 

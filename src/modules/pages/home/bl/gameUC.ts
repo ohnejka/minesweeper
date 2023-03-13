@@ -26,7 +26,7 @@ export class GameUC {
     const arrayWithBombs = this.createArrayWithBombs();
     const matrix = this.createMatrix(arrayWithBombs);
 
-    console.log('init game');
+    // console.log('init game');
 
     const isAlive = this.queryRepo.getIsAlive();
 
