@@ -28,6 +28,7 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import FlagIcon from '@mui/icons-material/Flag';
 import { v4 } from 'uuid';
 import { SavePlayer } from './SavePlayer/ui';
+import { GameLevels } from '../../../common/bl/entities';
 
 const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
@@ -130,7 +131,11 @@ const Game: FC = () => {
         </Typography>
       </StyledTimerBox>
       <Box sx={{ position: 'relative' }}>
-        <StyledGameBox>
+        <StyledGameBox
+          isEasyLevel={currentLevel === GameLevels.Easy}
+          isMediumLevel={currentLevel === GameLevels.Medium}
+          isHardLevel={currentLevel === GameLevels.Hard}
+        >
           <Box
             style={{
               display: 'flex',

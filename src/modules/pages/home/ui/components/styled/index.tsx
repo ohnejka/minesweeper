@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import styled from 'styled-components';
-import { device } from '../../../../../global/styles/mediaSizes';
 import { baseTheme } from '../../../../../global/styles/theme';
 interface CellProps {
   isOpen: boolean;
@@ -98,6 +97,7 @@ export const TimerBox = styled(Box)`
 
 export const StyledTimerBox = styled(Box)`
   display: flex;
+  align-self: center;
   gap: 10px;
   min-width: 240px;
   justify-content: space-between;
@@ -122,22 +122,49 @@ export const StyledDiv = styled.div`
 `;
 
 export const BodyDiv = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
   flex-grow: 1;
   margin-top: 30px;
   margin-bottom: 40px;
   padding: 0 10px;
   height: 100%;
-  overflow-x: scroll;
 
-  @media ${device.mobile_tablet} {
-    padding: 0 20px;
+  @media only screen and (max-width: 425px) {
+    padding: 0 5px;
   }
 `;
 
-export const StyledGameBox = styled.div`
+export const StyledGameBox = styled.div<{
+  isEasyLevel: boolean;
+  isMediumLevel: boolean;
+  isHardLevel: boolean;
+}>`
   display: flex;
-  justify-content: center;
+  overflow-x: scroll;
+
+  // MOBILE
+  @media only screen and (orientation: portrait) and (max-width: 425px) {
+    justify-content: ${(props) =>
+      props.isEasyLevel ? 'center' : 'flex-start'};
+  }
+
+  @media only screen and (orientation: landscape) and (min-width: 500px) {
+    justify-content: ${(props) =>
+      props.isEasyLevel || props.isMediumLevel ? 'center' : 'flex-start'};
+  }
+
+  @media only screen and (min-width: 768px) {
+    justify-content: ${(props) =>
+      props.isEasyLevel || props.isMediumLevel ? 'center' : 'flex-start'};
+  }
+
+  @media only screen and (orientation: landscape) and (min-width: 768px) {
+    justify-content: center;
+  }
+
+  @media (min-width: 1024px) {
+    justify-content: center;
+  }
 `;
