@@ -1,6 +1,7 @@
 import { Box, Popover, Typography } from '@mui/material';
 import {
   FC,
+  memo,
   SyntheticEvent,
   useContext,
   useEffect,
@@ -8,27 +9,19 @@ import {
   useState,
 } from 'react';
 import styled from 'styled-components';
-import {
-  formatSeconds,
-  TimerFormat,
-} from '../../../../global/helpers/formatSeconds';
-import { CellUserStatus, GameCell } from '../../bl/entities';
 import { HomeContext, HomeContextState } from '../context/homeContext';
 import {
-  StyledCell,
   StyledDiv,
   StyledGameOverBanner,
-  TimerBox,
-  StyledTimerBox,
   BodyDiv,
   StyledGameBox,
+  StyledTimerBox,
 } from './styled';
-import clsx from 'clsx';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import FlagIcon from '@mui/icons-material/Flag';
 import { v4 } from 'uuid';
 import { SavePlayer } from './SavePlayer/ui';
 import { GameLevels } from '../../../common/bl/entities';
+import Timer from './Timer';
+import Board from './Board';
 
 const Game: FC = () => {
   const homeContext: HomeContextState = useContext(HomeContext);
@@ -61,8 +54,6 @@ const Game: FC = () => {
     return () => clearInterval(intervalId);
   }, [gameIsStarted, handleUpdateTimer, time, isAlive, isWin]);
 
-  const formattedTime: TimerFormat = formatSeconds(time);
-
   const baseForPopupRef = useRef(null);
 
   useEffect(() => {
@@ -82,45 +73,8 @@ const Game: FC = () => {
 
   return (
     <BodyDiv ref={baseForPopupRef} className='bodyBox'>
-      <StyledTimerBox style={{ display: 'flex', gap: '10px' }}>
-        <TimerBox className='time-box'>
-          <Typography
-            variant='subtitle1'
-            component='span'
-            sx={{ fontFamily: 'monospace' }}
-          >
-            {formattedTime.h}
-          </Typography>
-          <Typography
-            variant='subtitle1'
-            component='span'
-            sx={{ fontFamily: 'monospace' }}
-          >
-            :
-          </Typography>
-          <Typography
-            variant='subtitle1'
-            component='span'
-            sx={{ fontFamily: 'monospace' }}
-          >
-            {formattedTime.m}
-          </Typography>
-          <Typography
-            variant='subtitle1'
-            component='span'
-            sx={{ fontFamily: 'monospace' }}
-          >
-            :
-          </Typography>
-          <Typography
-            variant='subtitle1'
-            component='span'
-            sx={{ fontFamily: 'monospace' }}
-          >
-            {formattedTime.s}
-          </Typography>
-        </TimerBox>
-
+      <StyledTimerBox>
+        <Timer time={time} />
         <Typography
           variant='subtitle1'
           component='span'
@@ -129,79 +83,19 @@ const Game: FC = () => {
           {restBombsQty} 💣
         </Typography>
       </StyledTimerBox>
+
       <Box sx={{ position: 'relative' }}>
         <StyledGameBox
           isEasyLevel={currentLevel === GameLevels.Easy}
           isMediumLevel={currentLevel === GameLevels.Medium}
           isHardLevel={currentLevel === GameLevels.Hard}
         >
-          <Box
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-            className={clsx((!gameIsStarted || !isAlive) && '--muted')}
-          >
-            {matrix.map((row: ReadonlyArray<GameCell>, rowIndex) => {
-              return (
-                <div style={{ display: 'flex' }} key={rowIndex}>
-                  {row.map((el: GameCell, elIndex) => {
-                    return (
-                      <div
-                        key={el.id}
-                        onClick={(e: SyntheticEvent) =>
-                          onCellClick(e, rowIndex, elIndex)
-                        }
-                        onContextMenu={(e: SyntheticEvent) =>
-                          onCellClick(e, rowIndex, elIndex)
-                        }
-                      >
-                        <StyledCell
-                          isOpen={el.isOpen}
-                          bombsAround={el.bombsAround}
-                          className={clsx(
-                            !el.isOpen && '--closed',
-                            !el.isOpen &&
-                              el.status !== CellUserStatus.Untouched &&
-                              '--user-attribute',
-                            el.isOpen && '--open',
-                            el.isOpen && el.isBomb && '--bombed',
-                            el.isOpen && !el.isBomb && '--figure'
-                          )}
-                        >
-                          {el.isOpen && el.isBomb && <span>💣</span>}
-                          {el.isOpen && !el.isBomb && (
-                            <span>{el.bombsAround}</span>
-                          )}
-                          {!el.isOpen &&
-                            el.status === CellUserStatus.Untouched && (
-                              <span>
-                                <Typography variant='body1'>
-                                  {el.bombsAround}
-                                </Typography>
-                              </span>
-                            )}
-                          {!el.isOpen && el.status === CellUserStatus.Flag && (
-                            <span>
-                              <FlagIcon sx={{ color: 'red' }} />
-                            </span>
-                          )}
-
-                          {!el.isOpen &&
-                            el.status === CellUserStatus.Question && (
-                              <span>
-                                <QuestionMarkIcon sx={{ color: 'blue' }} />
-                              </span>
-                            )}
-                          {/* <div className={'hover-info'}>{JSON.stringify(el)}</div> */}
-                        </StyledCell>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </Box>
+          <Board
+            gameIsStarted={gameIsStarted}
+            isAlive={isAlive}
+            matrix={matrix}
+            onCellClick={onCellClick}
+          />
           {!isAlive && (
             <StyledGameOverBanner>
               <Typography
@@ -250,4 +144,4 @@ export const StyledGame = styled(Game)`
   justify-content: center;
 `;
 
-export default StyledGame;
+export default memo(StyledGame);

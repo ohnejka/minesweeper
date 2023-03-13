@@ -3,6 +3,7 @@ import {
   FC,
   PropsWithChildren,
   SyntheticEvent,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -76,11 +77,15 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [gameCommandRepo, gameQueryRepo]);
 
   // . init and update on level change
-  useEffect(() => {
+  const initGame = useCallback(() => {
     gameUC.initGame(levelSettings[currentLevel]);
     setGameIsStarted(false);
     setTime(0);
-  }, [gameUC, levelSettings, currentLevel]);
+  }, [currentLevel, levelSettings, gameUC]);
+
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
 
   const value: HomeContextState = {
     state: {
@@ -105,6 +110,7 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       },
       handleUpdateTimer: () => {
         const newTime = timeInSeconds + 1;
+        console.log(new Date().toISOString());
         setTime(newTime);
       },
       onCellClick: (e: SyntheticEvent, rowIndex: number, colIndex: number) => {
