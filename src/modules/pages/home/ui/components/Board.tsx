@@ -26,14 +26,24 @@ export const Board: FC<BoardProps> = ({
   onCellClick,
   onLongTouch,
 }) => {
-  const longTouchEndCb = useCallback(
+  const longPressCb = useCallback(
     (rowIndex: number, elIndex: number) => {
       onLongTouch(rowIndex, elIndex);
     },
     [onLongTouch]
   );
 
-  const { handlers } = useLongPress({ longTouchEndCb });
+  const clickCb = useCallback(
+    (e: SyntheticEvent, rowIndex: number, elIndex: number) => {
+      onCellClick(e, rowIndex, elIndex);
+    },
+    [onCellClick]
+  );
+
+  const { handlers } = useLongPress({
+    longPressCb,
+    clickCb,
+  });
 
   return (
     <Box
@@ -51,13 +61,17 @@ export const Board: FC<BoardProps> = ({
                 <div
                   key={el.id}
                   onClick={(e: SyntheticEvent) =>
-                    onCellClick(e, rowIndex, elIndex)
+                    handlers.onClick(e, rowIndex, elIndex)
                   }
                   onContextMenu={(e: SyntheticEvent) =>
                     onCellClick(e, rowIndex, elIndex)
                   }
-                  onTouchEnd={() => handlers.onTouchEnd(rowIndex, elIndex)}
-                  onTouchStart={() => handlers.onTouchStart}
+                  onTouchEnd={(e: SyntheticEvent) =>
+                    handlers.onTouchEnd(e, rowIndex, elIndex)
+                  }
+                  onTouchStart={handlers.onTouchStart}
+                  onMouseDown={handlers.onMouseDown}
+                  onMouseUp={handlers.onMouseUp}
                 >
                   <StyledCell
                     isOpen={el.isOpen}
