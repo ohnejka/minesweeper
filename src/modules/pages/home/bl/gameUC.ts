@@ -1,5 +1,5 @@
-import { shuffleArray } from '../../../global/helpers/shuffleArray';
-import { splitArrayIntoChunks } from '../../../global/helpers/splitArrayIntoChunks';
+import { shuffleArray } from './helpers/shuffleArray';
+import { splitArrayIntoChunks } from './helpers/splitArrayIntoChunks';
 import { CellUserStatus, GameCell, GameMatrix } from './entities';
 import { v4 } from 'uuid';
 import { GameCommandRepo } from '../ds/repositories/game/commandRepo';

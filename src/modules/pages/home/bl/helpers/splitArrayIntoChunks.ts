@@ -3,7 +3,7 @@ export function splitArrayIntoChunks<T>(
   chunkSize = 8
 ): ReadonlyArray<ReadonlyArray<T>> {
   if (chunkSize === 0) {
-    console.error(`chunk size must be greater than 0, usgin default ${8}`);
+    console.error(`chunk size must be greater than 0, using default ${8}`);
   }
 
   const chunkArray = [];
