@@ -3,7 +3,6 @@ import { FC } from 'react';
 import { StyledBaseTable } from './styled';
 import { Typography } from '@mui/material';
 import { TimerBox } from '../../../home/ui/components/styled';
-import { time } from 'console';
 import {
   TimerFormat,
   formatSeconds,

@@ -7,6 +7,7 @@ import {
   TimerFormat,
 } from '../../../../../../global/helpers/formatSeconds';
 import { withContext } from '../../../../../../global/react/WithContext';
+import { baseTheme } from '../../../../../../global/styles/theme';
 import { TimerBox } from '../../styled';
 import {
   SavePlayerContext,
@@ -19,18 +20,50 @@ const SavePlayerInner: FC = () => {
 
   return (
     <StyledSection>
-      <Box sx={{ display: 'flex' }}>
-        <Typography>You win! Your time is:</Typography>
-        <TimerBox>
-          {formattedTime.withHours && (
-            <Typography variant='body1'>{formattedTime.h} h</Typography>
-          )}
-          {formattedTime.withMinutes && (
-            <Typography variant='body1'>{formattedTime.m} min</Typography>
-          )}
+      <Box
+        marginBottom={2}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography
+          variant='h6'
+          component='span'
+          sx={{ fontFamily: 'monospace', color: baseTheme.layout.accent2 }}
+        >
+          ✨You win!✨
+        </Typography>
+        <div
+          style={{
+            display: 'flex',
+          }}
+        >
+          <Typography
+            variant='body1'
+            component='span'
+            sx={{ fontFamily: 'monospace' }}
+          >
+            Your time is:
+          </Typography>
+          <TimerBox sx={{ color: baseTheme.layout.gray12 }}>
+            {formattedTime.withHours && (
+              <Typography variant='body1' sx={{ fontFamily: 'monospace' }}>
+                {formattedTime.h}h
+              </Typography>
+            )}
+            {formattedTime.withMinutes && (
+              <Typography variant='body1' sx={{ fontFamily: 'monospace' }}>
+                {formattedTime.m}min
+              </Typography>
+            )}
 
-          <Typography variant='body1'>{formattedTime.s} s</Typography>
-        </TimerBox>
+            <Typography variant='body1' sx={{ fontFamily: 'monospace' }}>
+              {formattedTime.s}s
+            </Typography>
+          </TimerBox>
+        </div>
       </Box>
       <form
         onSubmit={fns.onSubmit}
@@ -42,10 +75,11 @@ const SavePlayerInner: FC = () => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <TextField
-                style={{ marginBottom: 20 }}
-                label='Name'
+                style={{ marginBottom: 24 }}
+                label='Enter you name...'
                 variant='standard'
                 error={!!error}
+                color='error'
                 helperText={error?.message}
                 onChange={onChange}
                 value={value}
@@ -54,7 +88,12 @@ const SavePlayerInner: FC = () => {
           }}
         />
 
-        <Button variant='outlined' type='submit' sx={{ alignSelf: 'center' }}>
+        <Button
+          variant='outlined'
+          color='error'
+          type='submit'
+          sx={{ alignSelf: 'center', fontFamily: 'monospace' }}
+        >
           Save
         </Button>
       </form>

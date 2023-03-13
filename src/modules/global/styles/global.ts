@@ -67,7 +67,7 @@ export default createGlobalStyle`
             color: ${baseTheme.layout.accent2};
         }
     }
-    // oberriding mui theme colors.
+    // overriding mui theme colors.
     // better ofc to create a new theme and use, this is simplest temp solution
 
     .MuiTypography-root.MuiTypography-body1.MuiFormControlLabel-label  {
