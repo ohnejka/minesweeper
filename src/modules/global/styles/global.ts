@@ -41,6 +41,8 @@ export default createGlobalStyle`
 
     ul {
         list-style: none;
+        margin: 0;
+        padding: 0;
     }
 
     a {
@@ -65,8 +67,22 @@ export default createGlobalStyle`
             color: ${baseTheme.layout.accent2};
         }
     }
+    // oberriding mui theme colors.
+    // better ofc to create a new theme and use, this is simplest temp solution
 
     .MuiTypography-root.MuiTypography-body1.MuiFormControlLabel-label  {
         font-family: monospace;
+    }
+
+    .MuiTabs-indicator {
+        background-color: ${baseTheme.layout.accent1} !important;
+    }
+
+    .MuiButtonBase-root.MuiTab-root.MuiTab-textColorPrimary.Mui-selected {
+        color: ${baseTheme.layout.accent1} !important;
+    }
+
+    .MuiTabs-root {
+        color: ${baseTheme.layout.accent1};
     }
 `;

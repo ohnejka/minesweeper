@@ -56,7 +56,7 @@ const Settings: FC = () => {
                       }}
                     />
                   }
-                  label={option}
+                  label={option.toLowerCase()}
                 />
               ))}
           </RadioGroup>
@@ -80,11 +80,6 @@ const Settings: FC = () => {
     </Grid>
   );
 };
-
-// const StyledButton = styled(Button)`
-//   border-color: ${baseTheme.layout.accent2};
-//   color: ${baseTheme.layout.accent2};
-// `;
 
 const StyledSettings = styled(Settings)`
   display: flex;

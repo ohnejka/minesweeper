@@ -1,4 +1,4 @@
-import { Box, Tab, Typography } from '@mui/material';
+import { Box, Container, Tab, Typography } from '@mui/material';
 import {
   FC,
   PropsWithChildren,
@@ -15,6 +15,7 @@ import {
 import { Player } from '../../../common/ds/redux/playersSlice';
 import { GameLevels } from '../../../common/bl/entities';
 import BaseTable from './BaseTable';
+import { StyledTableDiv } from './styled';
 
 export const LeaderTable: FC = () => {
   const leaderboardContext: LeaderboardContextState =
@@ -41,17 +42,34 @@ export const LeaderTable: FC = () => {
   }, [players]);
 
   return (
-    <section>
-      <Typography variant='h1'> Local leaders </Typography>
-      <div>
+    <Container
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: 1,
+        alignItems: 'center',
+        paddingTop: '20px',
+      }}
+      className='container'
+    >
+      <Typography
+        variant='h5'
+        component='h2'
+        sx={{ fontFamily: 'monospace', marginBottom: '20px' }}
+      >
+        {' '}
+        🏆 local leaders 🏆{' '}
+      </Typography>
+      <StyledTableDiv>
         <Tabs
           value={value}
           onChange={onTabChange}
           aria-label='leaderboard tabs'
+          centered
         >
-          <Tab label='Easy' />
-          <Tab label='Medium' />
-          <Tab label='Hard' />
+          <Tab label='easy' sx={{ fontFamily: 'monospace' }} />
+          <Tab label='medium' sx={{ fontFamily: 'monospace' }} />
+          <Tab label='hard' sx={{ fontFamily: 'monospace' }} />
         </Tabs>
 
         <TabPanel value={value} index={0}>
@@ -63,8 +81,8 @@ export const LeaderTable: FC = () => {
         <TabPanel value={value} index={2}>
           <BaseTable players={hardPlayers} />
         </TabPanel>
-      </div>
-    </section>
+      </StyledTableDiv>
+    </Container>
   );
 };
 

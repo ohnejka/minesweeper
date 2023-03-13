@@ -205,8 +205,7 @@ const Game: FC = () => {
                 component='span'
                 sx={{ fontFamily: 'monospace' }}
               >
-                {' '}
-                You lost!{' '}
+                YOU LOST
               </Typography>
             </StyledGameOverBanner>
           )}

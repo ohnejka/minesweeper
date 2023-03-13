@@ -1,6 +1,14 @@
 import { Player } from '../../../common/ds/redux/playersSlice';
 import { FC } from 'react';
-import styled from 'styled-components';
+import { StyledBaseTable } from './styled';
+import { Typography } from '@mui/material';
+import { TimerBox } from '../../../home/ui/components/styled';
+import { time } from 'console';
+import {
+  TimerFormat,
+  formatSeconds,
+} from '../../../../global/helpers/formatSeconds';
+import { baseTheme } from '../../../../global/styles/theme';
 
 type TableProps = {
   players: ReadonlyArray<Player>;
@@ -8,41 +16,92 @@ type TableProps = {
 
 const BaseTable: FC<TableProps> = ({ players }) => {
   return (
-    <section className='table'>
-      <ul className='table__row table__row--head'>
+    <StyledBaseTable className='table'>
+      <ul className='table__row table__head'>
         <li className='table__item'>
-          <span>player name</span>
-          <span>game time</span>
+          <Typography variant='caption' sx={{ fontFamily: 'monospace' }}>
+            place
+          </Typography>
+        </li>
+        <li className='table__item'>
+          <Typography variant='caption' sx={{ fontFamily: 'monospace' }}>
+            player
+          </Typography>
+        </li>
+
+        <li className='table__item'>
+          <Typography variant='caption' sx={{ fontFamily: 'monospace' }}>
+            time
+          </Typography>
         </li>
       </ul>
 
-      <ul className='table__row table__row--body'>
+      <ul className='table__body'>
         {players.length > 0 &&
-          players.map((player: Player) => (
-            <li className='table__item' key={player.id}>
-              <span>{player.username}</span>
-              <span>{player.timeInSeconds}</span>
-            </li>
-          ))}
-        {players.length === 0 && <div>No leaders on this level yet...</div>}
+          players.map((player: Player, index: number) => {
+            const formattedTime: TimerFormat = formatSeconds(
+              player.timeInSeconds
+            );
+
+            return (
+              <li key={player.id} className='table__body-item'>
+                <ul className='table__row'>
+                  <li className='table__item'>
+                    <Typography
+                      variant='body2'
+                      sx={{ fontFamily: 'monospace' }}
+                    >
+                      {index + 1}
+                    </Typography>
+                  </li>
+                  <li className='table__item'>
+                    <Typography
+                      variant='body2'
+                      sx={{ fontFamily: 'monospace' }}
+                    >
+                      {player.username}
+                    </Typography>
+                  </li>
+
+                  <li className='table__item'>
+                    <TimerBox sx={{ color: baseTheme.layout.accent2 }}>
+                      {formattedTime.withHours && (
+                        <Typography
+                          variant='body2'
+                          sx={{ fontFamily: 'monospace' }}
+                        >
+                          {formattedTime.h}h
+                        </Typography>
+                      )}
+                      {formattedTime.withMinutes && (
+                        <Typography
+                          variant='body2'
+                          sx={{ fontFamily: 'monospace' }}
+                        >
+                          {formattedTime.m}min
+                        </Typography>
+                      )}
+
+                      <Typography
+                        variant='body2'
+                        sx={{ fontFamily: 'monospace' }}
+                      >
+                        {formattedTime.s}s
+                      </Typography>
+                    </TimerBox>
+                  </li>
+                </ul>
+              </li>
+            );
+          })}
+        {players.length === 0 && (
+          <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>
+            No leaders on this level yet...
+          </Typography>
+        )}
       </ul>
-    </section>
+    </StyledBaseTable>
   );
 };
 
-const StyledBaseTable = styled(BaseTable)`
-  .table {
-    display: flex;
-    flex-direction: column;
-
-    &__row {
-      display: flex;
-    }
-
-    &__item {
-      display: flex;
-    }
-  }
-`;
-
-export default StyledBaseTable;
+export default BaseTable;

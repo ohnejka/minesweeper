@@ -12,21 +12,22 @@ export const DefaultLayout: FC<PropsWithChildren<any>> = ({ children }) => {
         color='transparent'
         sx={{
           boxShadow: 'none',
-          borderBottom: `1px solid ${baseTheme.layout.gray12}`,
+          borderBottom: `1px solid ${baseTheme.layout.gray5}`,
         }}
       >
         <Toolbar>
           <Typography
-            variant='h5'
+            variant='h6'
             component='h1'
             sx={{
               mr: 2,
               flexGrow: 1,
               display: { xs: 'none', sm: 'block' },
               fontFamily: 'monospace',
+              color: baseTheme.layout.gray5,
             }}
           >
-            Minesweeper game
+            minesweeper
           </Typography>
           <Box display={'flex'} gap={'10px'}>
             <NavLink
@@ -38,7 +39,7 @@ export const DefaultLayout: FC<PropsWithChildren<any>> = ({ children }) => {
                 component='span'
                 sx={{ fontFamily: 'monospace' }}
               >
-                Game
+                game
               </Typography>
             </NavLink>
             <NavLink
@@ -50,7 +51,7 @@ export const DefaultLayout: FC<PropsWithChildren<any>> = ({ children }) => {
                 component='span'
                 sx={{ fontFamily: 'monospace' }}
               >
-                Leaderboard
+                leaderboard
               </Typography>
             </NavLink>
           </Box>
