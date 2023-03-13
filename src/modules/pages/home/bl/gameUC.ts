@@ -300,10 +300,18 @@ export class GameUC {
     const existingCellsAround = aroundArr.filter((c: GameCell | null) => !!c);
     const verifiedCellsAround = existingCellsAround as GameCell[];
 
-    // . add parent cell
-    verifiedCellsAround.push(cell);
-    // . get only closed
-    const verifiedAndClosedCells = verifiedCellsAround.filter((c) => !c.isOpen);
+    // . if parent cell is flagged - open it separately
+    if (!cell.isOpen && cell.status !== CellUserStatus.Untouched) {
+      this.commandRepo.openCell(row, col);
+    } else {
+      // . if it's clear - process with other cells
+      verifiedCellsAround.push(cell);
+    }
+
+    // . get only closed and without user flags
+    const verifiedAndClosedCells = verifiedCellsAround.filter(
+      (c) => !c.isOpen && c.status === CellUserStatus.Untouched
+    );
 
     // . if no closed left - leave recursion
     if (verifiedAndClosedCells.length === 0) {
