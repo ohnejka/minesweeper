@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import styled from 'styled-components';
+import { device } from '../../../../../global/styles/mediaSizes';
 import { baseTheme } from '../../../../../global/styles/theme';
 interface CellProps {
   isOpen: boolean;
@@ -13,8 +14,8 @@ export const StyledCell = styled.div<CellProps>`
   justify-content: center;
   width: 30px;
   height: 30px;
-  background-color: ${baseTheme.gameColors.background};
-  border: 0.5px solid ${baseTheme.gameColors.border};
+  background-color: ${baseTheme.layout.gray2};
+  border: 0.5px solid ${baseTheme.layout.gray5};
   cursor: pointer;
   user-select: none;
 
@@ -33,9 +34,9 @@ export const StyledCell = styled.div<CellProps>`
   &.--open {
     cursor: none;
     pointer-events: none;
-    background-color: ${baseTheme.gameColors.openBackground};
-    border: ${baseTheme.gameColors.openShadow};
-    box-shadow: inset 0 0 1px ${baseTheme.gameColors.openShadow};
+    background-color: ${baseTheme.layout.gray3};
+    border: ${baseTheme.layout.gray6};
+    box-shadow: inset 0 0 1px ${baseTheme.layout.gray6};
 
     span {
       opacity: 1;
@@ -43,8 +44,8 @@ export const StyledCell = styled.div<CellProps>`
   }
 
   &.--bombed {
-    background-color: ${baseTheme.gameColors.bombedBackground};
-    border: ${baseTheme.gameColors.bombedBackground};
+    background-color: ${baseTheme.layout.accent2};
+    border: ${baseTheme.layout.accent2};
   }
 
   &.--figure {
@@ -91,6 +92,15 @@ export const StyledCell = styled.div<CellProps>`
 
 export const TimerBox = styled(Box)`
   display: flex;
+  font-family: monospace;
+  color: ${baseTheme.layout.accent3};
+`;
+
+export const StyledTimerBox = styled(Box)`
+  display: flex;
+  gap: 10px;
+  min-width: 240px;
+  justify-content: space-between;
 `;
 
 export const StyledGameOverBanner = styled.div`
@@ -102,11 +112,32 @@ export const StyledGameOverBanner = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${baseTheme.gameColors.bombedBackground};
+  color: ${baseTheme.layout.accent2};
 `;
 
 export const StyledDiv = styled.div`
   padding: 20px;
   width: 350px;
   min-height: 150px;
+`;
+
+export const BodyDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  margin-top: 30px;
+  margin-bottom: 40px;
+  padding: 0 10px;
+  height: 100%;
+  overflow-x: scroll;
+
+  @media ${device.mobile_tablet} {
+    padding: 0 20px;
+  }
+`;
+
+export const StyledGameBox = styled.div`
+  display: flex;
+  justify-content: center;
 `;

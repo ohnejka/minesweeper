@@ -11,6 +11,7 @@ export default createGlobalStyle`
         flex-direction: column;
         min-height: 100vh;
         color: ${baseTheme.layout.gray12};
+        overflow-y: hidden;
     }
 
     body {
@@ -22,7 +23,7 @@ export default createGlobalStyle`
     .--muted {
         pointer-events: none;
         user-select: none;
-        opacity: 0.3;
+        opacity: 0.5;
     }
 
     .visually-hidden {

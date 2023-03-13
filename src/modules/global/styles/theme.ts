@@ -8,11 +8,6 @@ export const baseTheme = {
     six: 'aqua',
     seven: 'black',
     eight: 'white',
-    background: '#ced4da',
-    border: '#6c757d',
-    openBackground: '#adb5bd',
-    openShadow: '#495057',
-    bombedBackground: '#a4133c',
   },
   layout: {
     gray1: '#eeeeee',
@@ -30,5 +25,6 @@ export const baseTheme = {
     gray13: '#131316',
     accent1: '#f92432',
     accent2: '#e30613',
+    accent3: '#728359',
   },
 };

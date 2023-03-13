@@ -57,6 +57,15 @@ export const DefaultLayout: FC<PropsWithChildren<any>> = ({ children }) => {
         </Toolbar>
       </AppBar>
       <StyledBody className='styled-body'>{children}</StyledBody>
+      <Footer>
+        <Typography
+          variant='caption'
+          component='span'
+          sx={{ fontFamily: 'monospace', color: baseTheme.layout.gray2 }}
+        >
+          ohnejka 2023
+        </Typography>
+      </Footer>
     </StyledBox>
   );
 };
@@ -74,4 +83,11 @@ const StyledBody = styled.div`
   flex-grow: 1;
   height: 100%;
   padding-top: 64px;
+`;
+
+const Footer = styled.footer`
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px 0;
+  padding: 0 20px;
 `;

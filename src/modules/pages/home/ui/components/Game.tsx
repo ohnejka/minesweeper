@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Popover, Typography } from '@mui/material';
+import { Box, Popover, Typography } from '@mui/material';
 import {
   FC,
   SyntheticEvent,
@@ -19,6 +19,9 @@ import {
   StyledDiv,
   StyledGameOverBanner,
   TimerBox,
+  StyledTimerBox,
+  BodyDiv,
+  StyledGameBox,
 } from './styled';
 import clsx from 'clsx';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
@@ -78,101 +81,136 @@ const Game: FC = () => {
   };
 
   return (
-    <Grid
-      container
-      direction='column'
-      alignItems='center'
-      spacing={2}
-      marginTop={2}
-      ref={baseForPopupRef}
-    >
-      <Grid item xs={6} style={{ display: 'flex', gap: '10px' }}>
-        <TimerBox>
-          <Typography variant='body1'>{formattedTime.h}</Typography>
-          <Typography variant='body1'>:</Typography>
-          <Typography variant='body1'>{formattedTime.m}</Typography>
-          <Typography variant='body1'>:</Typography>
-          <Typography variant='body1'>{formattedTime.s}</Typography>
+    <BodyDiv ref={baseForPopupRef} className='bodyBox'>
+      <StyledTimerBox style={{ display: 'flex', gap: '10px' }}>
+        <TimerBox className='time-box'>
+          <Typography
+            variant='subtitle1'
+            component='span'
+            sx={{ fontFamily: 'monospace' }}
+          >
+            {formattedTime.h}
+          </Typography>
+          <Typography
+            variant='subtitle1'
+            component='span'
+            sx={{ fontFamily: 'monospace' }}
+          >
+            :
+          </Typography>
+          <Typography
+            variant='subtitle1'
+            component='span'
+            sx={{ fontFamily: 'monospace' }}
+          >
+            {formattedTime.m}
+          </Typography>
+          <Typography
+            variant='subtitle1'
+            component='span'
+            sx={{ fontFamily: 'monospace' }}
+          >
+            :
+          </Typography>
+          <Typography
+            variant='subtitle1'
+            component='span'
+            sx={{ fontFamily: 'monospace' }}
+          >
+            {formattedTime.s}
+          </Typography>
         </TimerBox>
-        <Divider orientation='vertical' flexItem />
-        <Typography variant='body1'>{restBombsQty} bombs left</Typography>
-      </Grid>
-      <Box style={{ position: 'relative' }}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-          className={clsx((!gameIsStarted || !isAlive) && '--muted')}
-        >
-          {matrix.map((row: ReadonlyArray<GameCell>, rowIndex) => {
-            return (
-              <div style={{ display: 'flex' }} key={rowIndex}>
-                {row.map((el: GameCell, elIndex) => {
-                  return (
-                    <div
-                      key={el.id}
-                      onClick={(e: SyntheticEvent) =>
-                        onCellClick(e, rowIndex, elIndex)
-                      }
-                      onContextMenu={(e: SyntheticEvent) =>
-                        onCellClick(e, rowIndex, elIndex)
-                      }
-                    >
-                      <StyledCell
-                        isOpen={el.isOpen}
-                        bombsAround={el.bombsAround}
-                        className={clsx(
-                          !el.isOpen && '--closed',
-                          !el.isOpen &&
-                            el.status !== CellUserStatus.Untouched &&
-                            '--user-attribute',
-                          el.isOpen && '--open',
-                          el.isOpen && el.isBomb && '--bombed',
-                          el.isOpen && !el.isBomb && '--figure'
-                        )}
-                      >
-                        {el.isOpen && el.isBomb && <span>💣</span>}
-                        {el.isOpen && !el.isBomb && (
-                          <span>{el.bombsAround}</span>
-                        )}
-                        {!el.isOpen &&
-                          el.status === CellUserStatus.Untouched && (
-                            <span>
-                              <Typography variant='body1'>
-                                {el.bombsAround}
-                              </Typography>
-                            </span>
-                          )}
-                        {!el.isOpen && el.status === CellUserStatus.Flag && (
-                          <span>
-                            <FlagIcon sx={{ color: 'red' }} />
-                          </span>
-                        )}
 
-                        {!el.isOpen &&
-                          el.status === CellUserStatus.Question && (
+        <Typography
+          variant='subtitle1'
+          component='span'
+          sx={{ fontFamily: 'monospace' }}
+        >
+          {restBombsQty} 💣
+        </Typography>
+      </StyledTimerBox>
+      <Box sx={{ position: 'relative' }}>
+        <StyledGameBox>
+          <Box
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+            className={clsx((!gameIsStarted || !isAlive) && '--muted')}
+          >
+            {matrix.map((row: ReadonlyArray<GameCell>, rowIndex) => {
+              return (
+                <div style={{ display: 'flex' }} key={rowIndex}>
+                  {row.map((el: GameCell, elIndex) => {
+                    return (
+                      <div
+                        key={el.id}
+                        onClick={(e: SyntheticEvent) =>
+                          onCellClick(e, rowIndex, elIndex)
+                        }
+                        onContextMenu={(e: SyntheticEvent) =>
+                          onCellClick(e, rowIndex, elIndex)
+                        }
+                      >
+                        <StyledCell
+                          isOpen={el.isOpen}
+                          bombsAround={el.bombsAround}
+                          className={clsx(
+                            !el.isOpen && '--closed',
+                            !el.isOpen &&
+                              el.status !== CellUserStatus.Untouched &&
+                              '--user-attribute',
+                            el.isOpen && '--open',
+                            el.isOpen && el.isBomb && '--bombed',
+                            el.isOpen && !el.isBomb && '--figure'
+                          )}
+                        >
+                          {el.isOpen && el.isBomb && <span>💣</span>}
+                          {el.isOpen && !el.isBomb && (
+                            <span>{el.bombsAround}</span>
+                          )}
+                          {!el.isOpen &&
+                            el.status === CellUserStatus.Untouched && (
+                              <span>
+                                <Typography variant='body1'>
+                                  {el.bombsAround}
+                                </Typography>
+                              </span>
+                            )}
+                          {!el.isOpen && el.status === CellUserStatus.Flag && (
                             <span>
-                              <QuestionMarkIcon sx={{ color: 'blue' }} />
+                              <FlagIcon sx={{ color: 'red' }} />
                             </span>
                           )}
-                        {/* <div className={'hover-info'}>{JSON.stringify(el)}</div> */}
-                      </StyledCell>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </Box>
-        {!isAlive && (
-          <StyledGameOverBanner>
-            <Typography variant='body2' sx={{ fontSize: '25px' }}>
-              {' '}
-              You lost!{' '}
-            </Typography>
-          </StyledGameOverBanner>
-        )}
+
+                          {!el.isOpen &&
+                            el.status === CellUserStatus.Question && (
+                              <span>
+                                <QuestionMarkIcon sx={{ color: 'blue' }} />
+                              </span>
+                            )}
+                          {/* <div className={'hover-info'}>{JSON.stringify(el)}</div> */}
+                        </StyledCell>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </Box>
+          {!isAlive && (
+            <StyledGameOverBanner>
+              <Typography
+                variant='h4'
+                component='span'
+                sx={{ fontFamily: 'monospace' }}
+              >
+                {' '}
+                You lost!{' '}
+              </Typography>
+            </StyledGameOverBanner>
+          )}
+        </StyledGameBox>
       </Box>
 
       {anchorEl && isWin && (
@@ -199,7 +237,7 @@ const Game: FC = () => {
           </StyledDiv>
         </Popover>
       )}
-    </Grid>
+    </BodyDiv>
   );
 };
 
