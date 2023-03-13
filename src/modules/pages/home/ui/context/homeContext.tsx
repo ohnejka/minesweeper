@@ -63,6 +63,7 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const [gameIsStarted, setGameIsStarted] = useState(false);
   const [timeInSeconds, setTime] = useState(0);
+  const [startDate, setStartDate] = useState(0);
 
   const gameCommandRepo = useMemo(() => {
     return new GameCommandRepo(store.dispatch);
@@ -81,11 +82,33 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
     gameUC.initGame(levelSettings[currentLevel]);
     setGameIsStarted(false);
     setTime(0);
+    setStartDate(Date.now());
   }, [currentLevel, levelSettings, gameUC]);
 
   useEffect(() => {
     initGame();
   }, [initGame]);
+
+  const isWin = gameQueryRepo.getIsWin();
+
+  const updateTimer = useCallback(() => {
+    const delta = +((Date.now() - startDate) / 1000).toFixed();
+    setTime(delta);
+  }, [startDate]);
+
+  useEffect(() => {
+    let intervalId: ReturnType<typeof setInterval>;
+
+    if (!isAlive || isWin) {
+      return;
+    }
+
+    if (gameIsStarted) {
+      intervalId = setInterval(() => updateTimer(), 1000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [gameIsStarted, isAlive, isWin, updateTimer]);
 
   const value: HomeContextState = {
     state: {
@@ -97,7 +120,7 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       matrix,
       isAlive,
       restBombsQty: gameQueryRepo.getFlaggedBombQty(),
-      isWin: gameQueryRepo.getIsWin(),
+      isWin,
     },
     fns: {
       handleLevelOptionChange: (level: GameLevels) => {
@@ -107,10 +130,11 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
         gameUC.initGame(levelSettings[currentLevel]);
         setGameIsStarted(true);
         setTime(0);
+        setStartDate(Date.now());
       },
       handleUpdateTimer: () => {
-        const newTime = timeInSeconds + 1;
-        setTime(newTime);
+        const delta = +((Date.now() - startDate) / 1000).toFixed();
+        setTime(delta);
       },
       onCellClick: (e: SyntheticEvent, rowIndex: number, colIndex: number) => {
         gameUC.onCellClick(e, rowIndex, colIndex);

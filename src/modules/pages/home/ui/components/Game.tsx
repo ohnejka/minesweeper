@@ -36,23 +36,9 @@ const Game: FC = () => {
     isWin,
     currentLevel,
   } = state;
-  const { handleUpdateTimer, onCellClick, onPlayerAdded } = fns;
+  const { onCellClick, onPlayerAdded } = fns;
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    let intervalId: ReturnType<typeof setInterval>;
-
-    if (!isAlive || isWin) {
-      return;
-    }
-
-    if (gameIsStarted) {
-      intervalId = setInterval(() => handleUpdateTimer(), 1000);
-    }
-
-    return () => clearInterval(intervalId);
-  }, [gameIsStarted, handleUpdateTimer, time, isAlive, isWin]);
 
   const baseForPopupRef = useRef(null);
 
@@ -121,7 +107,7 @@ const Game: FC = () => {
             horizontal: 'center',
           }}
           transformOrigin={{
-            vertical: 'center',
+            vertical: 'bottom',
             horizontal: 'center',
           }}
         >
