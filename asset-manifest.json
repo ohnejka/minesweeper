@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.js": "/minesweeper/static/js/main.82c352b6.js",
+    "static/js/787.9c1303fe.chunk.js": "/minesweeper/static/js/787.9c1303fe.chunk.js",
+    "index.html": "/minesweeper/index.html",
+    "main.82c352b6.js.map": "/minesweeper/static/js/main.82c352b6.js.map",
+    "787.9c1303fe.chunk.js.map": "/minesweeper/static/js/787.9c1303fe.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.82c352b6.js"
+  ]
+}
