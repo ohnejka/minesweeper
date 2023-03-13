@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { baseTheme } from '../../../global/styles/theme';
 
-export const DefaultLayout: FC<PropsWithChildren<any>> = ({ children }) => {
+export const DefaultLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
     <StyledBox className='layout-menu'>
       <AppBar

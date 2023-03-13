@@ -142,22 +142,26 @@ export const StyledGameBox = styled.div<{
   isHardLevel: boolean;
 }>`
   display: flex;
-  overflow-x: scroll;
 
   // MOBILE
   @media only screen and (orientation: portrait) and (max-width: 425px) {
     justify-content: ${(props) =>
       props.isEasyLevel ? 'center' : 'flex-start'};
+    overflow-x: ${(props) => (props.isEasyLevel ? 'auto' : 'scroll')};
   }
 
   @media only screen and (orientation: landscape) and (min-width: 500px) {
     justify-content: ${(props) =>
       props.isEasyLevel || props.isMediumLevel ? 'center' : 'flex-start'};
+    overflow-x: ${(props) =>
+      props.isEasyLevel || props.isMediumLevel ? 'auto' : 'scroll'};
   }
 
   @media only screen and (min-width: 768px) {
     justify-content: ${(props) =>
       props.isEasyLevel || props.isMediumLevel ? 'center' : 'flex-start'};
+    overflow-x: ${(props) =>
+      props.isEasyLevel || props.isMediumLevel ? 'auto' : 'scroll'};
   }
 
   @media only screen and (orientation: landscape) and (min-width: 768px) {

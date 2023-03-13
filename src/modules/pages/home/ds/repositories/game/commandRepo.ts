@@ -1,4 +1,3 @@
-import { Dispatch } from 'react';
 import { GameLevels } from '../../../../common/bl/entities';
 import {
   setCellArrayIsOpen,
@@ -10,10 +9,11 @@ import {
   setUserStatus,
   UserStatusCmd,
 } from '../../../../common/ds/redux/gameSlice';
+import { AppDispatch } from '../../../../common/ds/store';
 import { GameMatrix } from '../../../bl/entities';
 
 export class GameCommandRepo {
-  constructor(private dispatch: Dispatch<any>) {}
+  constructor(private dispatch: AppDispatch) {}
 
   public setGameLevel = (level: GameLevels): void => {
     const payload = setGameLevelRedux(level);

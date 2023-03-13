@@ -1,9 +1,9 @@
-import { Dispatch } from 'react';
 import { GameLevels } from '../../../../common/bl/entities';
 import { addPlayer } from '../../../../common/ds/redux/playersSlice';
+import { AppDispatch } from '../../../../common/ds/store';
 
 export class PlayersCommandRepo {
-  constructor(private dispatch: Dispatch<any>) {}
+  constructor(private dispatch: AppDispatch) {}
 
   public addNewPlayer = (
     username: string,

@@ -48,10 +48,9 @@ const Game: FC = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    let intervalId: any;
+    let intervalId: ReturnType<typeof setInterval>;
 
     if (!isAlive || isWin) {
-      clearInterval(intervalId);
       return;
     }
 
