@@ -110,11 +110,10 @@ export const HomeContextProvider: FC<PropsWithChildren> = ({ children }) => {
       },
       handleUpdateTimer: () => {
         const newTime = timeInSeconds + 1;
-        console.log(new Date().toISOString());
         setTime(newTime);
       },
       onCellClick: (e: SyntheticEvent, rowIndex: number, colIndex: number) => {
-        gameUC.onCellClick(e, rowIndex, colIndex, timeInSeconds);
+        gameUC.onCellClick(e, rowIndex, colIndex);
       },
       onPlayerAdded: () => {
         gameUC.onPlayerAdded();

@@ -26,7 +26,7 @@ export class GameUC {
     const arrayWithBombs = this.createArrayWithBombs();
     const matrix = this.createMatrix(arrayWithBombs);
 
-    console.log('repo set matrix');
+    console.log('init game');
 
     const isAlive = this.queryRepo.getIsAlive();
 
@@ -40,8 +40,7 @@ export class GameUC {
   public onCellClick = (
     e: SyntheticEvent,
     rowIndex: number,
-    colIndex: number,
-    timeInSeconds: number
+    colIndex: number
   ): void => {
     const matrix = this.queryRepo.getMatrix();
     const matrixCell = matrix[rowIndex][colIndex];
@@ -74,16 +73,22 @@ export class GameUC {
       const allBombsFlagged = this.checkIfAllBombsAreFlagged();
 
       if (allBombsFlagged) {
-        console.log('all bombs flagged, you WIN!');
         this.commandRepo.setIsWin(true);
       }
 
       return;
     }
 
-    // . left click
-    console.log(`clicked on cell: row ${rowIndex} col ${colIndex}`);
+    // . middle click
+    if ((e as any).button === 1) {
+      // . check if clicked cell is open
+      // .. if not - do nothing
+      // . check if  matrixCell.bomsAround === real qty of open bombs around
+      // .. if match, open all other cells around (recursive for empty ones)
+      // .. if not, do nothing
+    }
 
+    // . left click
     // .. if bomb - game over
     if (matrixCell.isBomb) {
       this.commandRepo.openCell(rowIndex, colIndex);
@@ -97,7 +102,6 @@ export class GameUC {
 
       const allClearCellsOpen = this.checkIfAllClearCellsAreOpen();
       if (allClearCellsOpen) {
-        console.log('all clear cells are open, you WIN');
         this.commandRepo.setIsWin(true);
       }
       return;
@@ -108,7 +112,6 @@ export class GameUC {
 
     const allClearCellsOpen = this.checkIfAllClearCellsAreOpen();
     if (allClearCellsOpen) {
-      console.log('all clear cells are open, you WIN');
       this.commandRepo.setIsWin(true);
     }
   };
